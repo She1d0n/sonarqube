@@ -37,10 +37,3 @@ You can skip report generation or select report type (executive or workbook) glo
 
 PDF report can be downloaded from the SonarQube GUI:
 ![PDF Report example](output.jpg?raw=true "PDF Report example")
-
-Issue tracking:
-https://trello.com/sonarpdf
-
-CI builds:
-https://travis-ci.org/gunterweb/sonar-pdf-plugin
-https://jenkins-sonarpdfreport.rhcloud.com/
