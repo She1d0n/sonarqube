@@ -36,6 +36,7 @@ public final class PDFResources implements Serializable {
     public static final String TENDENCY_DIR = "/tendency/";
     public static final String FRONT_PAGE_LOGO = "front.page.logo";
     public static final String SONAR_PNG_FILE = "/sonar.png";
+	public static final String CHINESE_FONT_FILE = "/msyh.ttf";
     public static final String SONAR_BASE_URL = "sonar.base.url";
 
     public static final String REPORT_PROPERTIES = "report.properties";

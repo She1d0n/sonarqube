@@ -243,7 +243,7 @@ public class ExecutivePDFReporter extends PDFReporter {
         // Static Analysis
         section.add(createStaticAnalysis(project));
         // Dynamic Analysis
-        section.add(createDynamicAnalysis(project));
+        //section.add(createDynamicAnalysis(project));
         // Coding issues analysis
         section.add(createCodingRuleViolations(project));
         // Coding issues details
@@ -297,8 +297,10 @@ public class ExecutivePDFReporter extends PDFReporter {
         criticalViolationsTendency.getDefaultCell().setFixedHeight(Style.TENDENCY_ICONS_HEIGHT);
         criticalViolationsTendency
                 .addCell(new Phrase(project.getMeasure(measure).getFormatValue(), Style.DASHBOARD_DATA_FONT));
-        criticalViolationsTendency
-                .addCell(getTendencyImage(project.getMeasure(measure).getQualitativeTendency(), okWhenGrows));
+		criticalViolationsTendency.addCell("");
+
+        //criticalViolationsTendency
+        //        .addCell(getTendencyImage(project.getMeasure(measure).getQualitativeTendency(), false));
 
         criticalViolations.addCell(criticalViolationsTendency);
         return criticalViolations;
@@ -425,7 +427,7 @@ public class ExecutivePDFReporter extends PDFReporter {
         linesOfCodeTendency.addCell(
                 getTendencyImage(project.getMeasure(MetricKeys.DUPLICATED_LINES).getQualitativeTendency(), false));
 
-        linesOfCode.addCell(linesOfCodeTendency);
+        //linesOfCode.addCell(linesOfCodeTendency);
         linesOfCode.addCell(new Phrase(project.getMeasure(MetricKeys.DIRECTORIES).getFormatValue() + " "
                 + getTextProperty(PDFResources.GENERAL_PACKAGES), Style.DASHBOARD_DATA_FONT_2));
         linesOfCode.addCell(new Phrase(project.getMeasure(MetricKeys.CLASSES).getFormatValue() + " "
@@ -445,7 +447,7 @@ public class ExecutivePDFReporter extends PDFReporter {
                 Style.DASHBOARD_DATA_FONT));
         commentsTendency.addCell(
                 getTendencyImage(project.getMeasure(MetricKeys.COMMENT_LINES_DENSITY).getQualitativeTendency(), true));
-        comments.addCell(commentsTendency);
+        //comments.addCell(commentsTendency);
         comments.addCell(new Phrase(project.getMeasure(MetricKeys.COMMENT_LINES).getFormatValue() + " "
                 + getTextProperty(PDFResources.GENERAL_COMMENT_LINES), Style.DASHBOARD_DATA_FONT_2));
 
@@ -455,14 +457,14 @@ public class ExecutivePDFReporter extends PDFReporter {
         PdfPTable complexityTendency = new PdfPTable(2);
         complexityTendency.getDefaultCell().setFixedHeight(Style.TENDENCY_ICONS_HEIGHT);
         Style.noBorderTable(complexityTendency);
-        complexityTendency.addCell(new Phrase(project.getMeasure(MetricKeys.FUNCTION_COMPLEXITY).getFormatValue(),
+        complexityTendency.addCell(new Phrase(project.getMeasure(MetricKeys.COMPLEXITY).getFormatValue(),
                 Style.DASHBOARD_DATA_FONT));
         complexityTendency.addCell(
                 getTendencyImage(project.getMeasure(MetricKeys.FUNCTION_COMPLEXITY).getQualitativeTendency(), false));
-        complexity.addCell(complexityTendency);
+        //complexity.addCell(complexityTendency);
         complexity.addCell(new Phrase(project.getMeasure(MetricKeys.CLASS_COMPLEXITY).getFormatValue() + " "
                 + getTextProperty(PDFResources.GENERAL_PER_CLASS), Style.DASHBOARD_DATA_FONT_2));
-        complexity.addCell(new Phrase(project.getMeasure(MetricKeys.COMPLEXITY).getFormatValue() + " "
+        complexity.addCell(new Phrase(project.getMeasure(MetricKeys.FUNCTION_COMPLEXITY).getFormatValue() + " "
                 + getTextProperty(PDFResources.GENERAL_DECISION_POINTS), Style.DASHBOARD_DATA_FONT_2));
 
         staticAnalysisTable.setSpacingBefore(10);

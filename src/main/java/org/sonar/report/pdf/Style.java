@@ -22,6 +22,10 @@ package org.sonar.report.pdf;
 import java.awt.Color;
 import java.util.Iterator;
 import java.util.List;
+import java.net.URL;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.lowagie.text.Font;
 import com.lowagie.text.Phrase;
@@ -38,16 +42,24 @@ public class Style {
 
     /**
      * Font used in main chapters title
-	 BaseFont bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H",   
-            BaseFont.NOT_EMBEDDED); 
      */
 
-    public static final Font CHAPTER_FONT = new Font(Font.TIMES_ROMAN, 18, Font.BOLD, Color.GRAY);
+	private static final Logger LOG = LoggerFactory.getLogger(Style.class);
+
+	public static final BaseFont CHINESE = setfont();
+
+    public static final Font CHAPTER_FONT = new Font(CHINESE, 18, Font.BOLD, Color.GRAY);
 
     /**
      * Font used in sub-chapters title
      */
-    public static final Font TITLE_FONT = new Font(Font.TIMES_ROMAN, 14, Font.BOLD, Color.GRAY);
+    public static final Font TITLE_FONT = new Font(CHINESE, 14, Font.BOLD, Color.GRAY);
+
+	/**
+     * Font used in TABLE_OF_CONTENTS
+     */
+	public static final Font CONTENTS_FONT = new Font(CHINESE, 9,Font.NORMAL, Color.BLACK);
+
 
     /**
      * Font used in graphics foots
@@ -57,7 +69,7 @@ public class Style {
     /**
      * Font used in general plain text
      */
-    public static final Font NORMAL_FONT = new Font(Font.TIMES_ROMAN, 11, Font.NORMAL, Color.BLACK);
+    public static final Font NORMAL_FONT = new Font(CHINESE, 11, Font.NORMAL, Color.BLACK);
 
     /**
      * Font used in code text (bold)
@@ -72,7 +84,7 @@ public class Style {
     /**
      * Font used in table of contents title
      */
-    public static final Font TOC_TITLE_FONT = new Font(Font.HELVETICA, 24, Font.BOLD, Color.GRAY);
+    public static final Font TOC_TITLE_FONT = new Font(CHINESE, 24, Font.BOLD, Color.GRAY);
 
     /**
      * Font used in front page (Project name)
@@ -92,12 +104,12 @@ public class Style {
     /**
      * Underlined font
      */
-    public static final Font UNDERLINED_FONT = new Font(Font.HELVETICA, 14, Font.UNDERLINE, Color.BLACK);
+    public static final Font UNDERLINED_FONT = new Font(CHINESE, 14, Font.UNDERLINE, Color.BLACK);
 
     /**
      * Dashboard metric title font
      */
-    public static final Font DASHBOARD_TITLE_FONT = new Font(Font.TIMES_ROMAN, 12, Font.BOLD, Color.BLACK);
+    public static final Font DASHBOARD_TITLE_FONT = new Font(CHINESE, 12, Font.NORMAL, Color.BLACK);
 
     /**
      * Dashboard metric value font
@@ -107,7 +119,7 @@ public class Style {
     /**
      * Dashboard metric details font
      */
-    public static final Font DASHBOARD_DATA_FONT_2 = new Font(Font.TIMES_ROMAN, 10, Font.BOLD,
+    public static final Font DASHBOARD_DATA_FONT_2 = new Font(CHINESE, 10, Font.NORMAL,
             new Color(100, 150, 190));
 
     /**
@@ -122,6 +134,18 @@ public class Style {
     private Style() {
         super();
     }
+
+	public static BaseFont setfont() {
+		try{
+		//BaseFont bfChineseSong = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED); 
+        BaseFont bfChinese = BaseFont.createFont(PDFResources.CHINESE_FONT_FILE, BaseFont.IDENTITY_H, BaseFont.EMBEDDED); 
+		return bfChinese; 
+		}catch(Exception e){
+			 LOG.error("Can not generate yaheiChinese Font", e);
+			 return null;
+		}
+    }
+
 
     public static void noBorderTable(final PdfPTable table) {
         table.getDefaultCell().setBorderColor(Color.WHITE);

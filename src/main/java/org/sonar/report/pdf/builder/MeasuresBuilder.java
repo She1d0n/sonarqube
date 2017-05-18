@@ -81,6 +81,7 @@ public class MeasuresBuilder extends AbstractBuilder {
     public List<String> getAllMetricKeys() throws ReportException {
 
         MetricQuery query = MetricQuery.all();
+		query.pageSize(500);
         Metrics metrics = sonar.find(query);
         List<String> allMetricKeys = new ArrayList<>();
         Iterator<Metric> it = metrics.getMetrics().iterator();

@@ -107,10 +107,10 @@ public class Toc extends PdfPageEventHelper {
         content.getDefaultCell().setHorizontalAlignment(PdfCell.ALIGN_LEFT);
         if (depth == 2) {
             content.getDefaultCell().setIndent(10);
-            content.addCell(new Phrase(title.getContent(), new Font(Font.HELVETICA, 10)));
+            content.addCell(new Phrase(title.getContent(), Style.CONTENTS_FONT));
         } else {
             content.getDefaultCell().setIndent(20);
-            content.addCell(new Phrase(title.getContent(), new Font(Font.HELVETICA, 9)));
+            content.addCell(new Phrase(title.getContent(), Style.CONTENTS_FONT));
         }
         content.getDefaultCell().setIndent(0);
         content.addCell("");
