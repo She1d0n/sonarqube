@@ -60,7 +60,10 @@ public class Style {
      */
 	public static final Font CONTENTS_FONT = new Font(CHINESE, 9,Font.NORMAL, Color.BLACK);
 
-
+    /**
+     * Font used in HEAD
+     */
+	public static final Font HEAD_FONT = new Font(CHINESE, 12,Font.NORMAL, Color.GRAY);
     /**
      * Font used in graphics foots
      */
@@ -89,7 +92,7 @@ public class Style {
     /**
      * Font used in front page (Project name)
      */
-    public static final Font FRONTPAGE_FONT_1 = new Font(Font.HELVETICA, 22, Font.BOLD, Color.BLACK);
+    public static final Font FRONTPAGE_FONT_1 = new Font(CHINESE, 22, Font.BOLD, Color.BLACK);
 
     /**
      * Font used in front page (Project description)

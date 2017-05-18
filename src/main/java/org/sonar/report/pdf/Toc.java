@@ -80,7 +80,7 @@ public class Toc extends PdfPageEventHelper {
         content.getDefaultCell().setBorderColorBottom(Color.LIGHT_GRAY);
         content.getDefaultCell().setHorizontalAlignment(PdfCell.ALIGN_LEFT);
         content.getDefaultCell().setUseBorderPadding(true);
-        content.addCell(new Phrase(title.getContent(), new Font(Font.HELVETICA, 11)));
+        content.addCell(new Phrase(title.getContent(), Style.NORMAL_FONT));
         content.getDefaultCell().setHorizontalAlignment(PdfCell.ALIGN_RIGHT);
         content.addCell(new Phrase("Page " + document.getPageNumber(), new Font(Font.HELVETICA, 11)));
         content.getDefaultCell().setBorderColorBottom(Color.WHITE);
