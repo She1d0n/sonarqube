@@ -424,10 +424,12 @@ public class ExecutivePDFReporter extends PDFReporter {
         linesOfCodeTendency.getDefaultCell().setFixedHeight(Style.TENDENCY_ICONS_HEIGHT);
         linesOfCodeTendency
                 .addCell(new Phrase(project.getMeasure(MetricKeys.NCLOC).getFormatValue(), Style.DASHBOARD_DATA_FONT));
-        linesOfCodeTendency.addCell(
-                getTendencyImage(project.getMeasure(MetricKeys.DUPLICATED_LINES).getQualitativeTendency(), false));
+		linesOfCodeTendency.addCell("");
+        
+		//linesOfCodeTendency.addCell(
+        //        getTendencyImage(project.getMeasure(MetricKeys.DUPLICATED_LINES).getQualitativeTendency(), false));
 
-        //linesOfCode.addCell(linesOfCodeTendency);
+        linesOfCode.addCell(linesOfCodeTendency);
         linesOfCode.addCell(new Phrase(project.getMeasure(MetricKeys.DIRECTORIES).getFormatValue() + " "
                 + getTextProperty(PDFResources.GENERAL_PACKAGES), Style.DASHBOARD_DATA_FONT_2));
         linesOfCode.addCell(new Phrase(project.getMeasure(MetricKeys.CLASSES).getFormatValue() + " "
@@ -445,9 +447,11 @@ public class ExecutivePDFReporter extends PDFReporter {
         Style.noBorderTable(commentsTendency);
         commentsTendency.addCell(new Phrase(project.getMeasure(MetricKeys.COMMENT_LINES_DENSITY).getFormatValue(),
                 Style.DASHBOARD_DATA_FONT));
-        commentsTendency.addCell(
-                getTendencyImage(project.getMeasure(MetricKeys.COMMENT_LINES_DENSITY).getQualitativeTendency(), true));
-        //comments.addCell(commentsTendency);
+       
+		commentsTendency.addCell("");
+		//commentsTendency.addCell(
+         //       getTendencyImage(project.getMeasure(MetricKeys.COMMENT_LINES_DENSITY).getQualitativeTendency(), true));
+        comments.addCell(commentsTendency);
         comments.addCell(new Phrase(project.getMeasure(MetricKeys.COMMENT_LINES).getFormatValue() + " "
                 + getTextProperty(PDFResources.GENERAL_COMMENT_LINES), Style.DASHBOARD_DATA_FONT_2));
 
@@ -459,9 +463,10 @@ public class ExecutivePDFReporter extends PDFReporter {
         Style.noBorderTable(complexityTendency);
         complexityTendency.addCell(new Phrase(project.getMeasure(MetricKeys.COMPLEXITY).getFormatValue(),
                 Style.DASHBOARD_DATA_FONT));
-        complexityTendency.addCell(
-                getTendencyImage(project.getMeasure(MetricKeys.FUNCTION_COMPLEXITY).getQualitativeTendency(), false));
-        //complexity.addCell(complexityTendency);
+        complexityTendency.addCell("");
+		//complexityTendency.addCell(
+        //        getTendencyImage(project.getMeasure(MetricKeys.FUNCTION_COMPLEXITY).getQualitativeTendency(), false));
+        complexity.addCell(complexityTendency);
         complexity.addCell(new Phrase(project.getMeasure(MetricKeys.CLASS_COMPLEXITY).getFormatValue() + " "
                 + getTextProperty(PDFResources.GENERAL_PER_CLASS), Style.DASHBOARD_DATA_FONT_2));
         complexity.addCell(new Phrase(project.getMeasure(MetricKeys.FUNCTION_COMPLEXITY).getFormatValue() + " "
