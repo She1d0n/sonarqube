@@ -1,0 +1,1 @@
+#sonar-pdf-plugin
