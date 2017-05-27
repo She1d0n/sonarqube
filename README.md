@@ -1,7 +1,7 @@
 Sonar PDF Report Plugin
 =========================
 
-Version compatbility : 5.3+. Use maven to build from repository
+Version compatbility : 5.3--5.6. Use maven to build from repository
 
 ## Description / Features
 
