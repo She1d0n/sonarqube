@@ -83,6 +83,13 @@ public class PDFPostJob implements PostJob, CheckProject {
     @Override
     public void executeOn(final Project project, final SensorContext context) {
         LOG.info("Executing decorator: PDF Report");
+		try{
+			Thread.sleep();
+		}
+		catch(InterruptedException e)
+		{
+		  LOG.error("Problem waiting for PDFGenerator.")
+		}
         String sonarHostUrl = settings.hasKey(SONAR_HOST_URL) ? settings.getString(SONAR_HOST_URL)
                 : SONAR_HOST_URL_DEFAULT_VALUE;
         String username = settings.hasKey(USERNAME) ? settings.getString(USERNAME) : USERNAME_DEFAULT_VALUE;

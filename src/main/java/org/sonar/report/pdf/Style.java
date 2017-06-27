@@ -207,8 +207,8 @@ public class Style {
         while (itLeft.hasNext()) {
             String textLeft = itLeft.next();
             String textRight = itRight.next();
-            PdfPCell leftCell = new PdfPCell(new Phrase(textLeft));
-            PdfPCell rightCell = new PdfPCell(new Phrase(textRight));
+            PdfPCell leftCell = new PdfPCell(new Phrase(textLeft,Style.NORMAL_FONT));
+            PdfPCell rightCell = new PdfPCell(new Phrase(textRight,Style.NORMAL_FONT));
             if (isColorSet) {
                 Color color = itColor.next();
                 leftCell.setBackgroundColor(color);

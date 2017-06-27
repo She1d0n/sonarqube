@@ -73,6 +73,8 @@ public class ExecutivePDFReporter extends PDFReporter {
 
     private static final String QUALITY_PROFILE_NAME = "name";
 
+	private static final String QUALITY_PROFILE_LANGUAGE = "language";
+
     private static final Logger LOG = LoggerFactory.getLogger(ExecutivePDFReporter.class);
 
     private URL logo;
@@ -147,9 +149,13 @@ public class ExecutivePDFReporter extends PDFReporter {
             JSONParser parser = new JSONParser();
             JSONArray json = (JSONArray) parser.parse(qualityProfile);
             if (!json.isEmpty()) {
-                Map<String, String> properties = JdkUtils.getInstance().getFieldsWithValues(json.get(0));
-                if (properties.containsKey(QUALITY_PROFILE_NAME)) {
-                    title.addCell(new Phrase(properties.get(QUALITY_PROFILE_NAME), Style.FRONTPAGE_FONT_3));
+				for (int i=0; i<json.size();i++)
+				{
+					 Map<String, String> properties = JdkUtils.getInstance().getFieldsWithValues(json.get(i));
+					 if (properties.containsKey(QUALITY_PROFILE_NAME)) {
+						title.addCell(new Phrase(properties.get(QUALITY_PROFILE_LANGUAGE)+':'+properties.get(QUALITY_PROFILE_NAME), Style.FRONTPAGE_FONT_3));
+					}
+
                 }
 
             }
