@@ -140,7 +140,8 @@ public class HttpClient3Connector implements Connector {
 
         try (InputStream inputStream = method.getResponseBodyAsStream();
                 BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(inputStream, Charset.defaultCharset()));) {
+                        //new InputStreamReader(inputStream, Charset.defaultCharset()));) {
+						new InputStreamReader(inputStream, "UTF-8"));) {
 
             final StringBuilder sb = new StringBuilder();
             String line;
