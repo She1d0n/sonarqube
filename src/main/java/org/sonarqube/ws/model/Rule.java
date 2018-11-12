@@ -33,7 +33,8 @@ public class Rule implements Model {
     String status;
     String lang;
     String langName;
-
+    String htmlDesc;
+    
     public String getKey() {
         return key;
     }
@@ -44,6 +45,10 @@ public class Rule implements Model {
 
     public String getName() {
         return name;
+    }
+    
+    public String getDescription() {
+        return htmlDesc;
     }
 
     public void setName(String name) {
@@ -73,4 +78,5 @@ public class Rule implements Model {
     public void setLangName(String langName) {
         this.langName = langName;
     }
+    
 }

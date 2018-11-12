@@ -43,29 +43,6 @@
 		</developer>
 	</developers>
 
-	
-	<issueManagement>
-		<system>JIRA</system>
-		<url>http://jira.codehaus.org/browse/SONARPLUGINS/component/14372</url>
-	</issueManagement>
-	<distributionManagement>
-		<repository>
-			<id>localNexus</id>
-			<name>Local - releases</name>
-			<url>http://localhost:8083/repository/maven-releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>localNexus</id>
-			<name>Local - snapshots</name>
-			<url>http://localhost:8083/repository/maven-snapshots/</url>
-		</snapshotRepository>
-		<site>
-			<id>pdf_sonar_site</id>
-			<name>Sonar PDF Site Server</name>
-			<url>ftp://xxxx</url>
-		</site>
-	</distributionManagement>
-
 	<properties>
 		<sonar.pluginName>PDF Report</sonar.pluginName>
 		<sonar.pluginClass>org.sonar.report.pdf.plugin.PDFReportPlugin</sonar.pluginClass>
@@ -101,6 +78,7 @@
 			<artifactId>itext</artifactId>
 			<version>${itext.version}</version>
 		</dependency>
+
 		<!--dependency>
 			<groupId>com.lowagie</groupId>
 			<artifactId>itextasian</artifactId>

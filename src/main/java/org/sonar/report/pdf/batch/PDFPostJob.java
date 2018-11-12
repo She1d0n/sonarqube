@@ -90,7 +90,7 @@ public class PDFPostJob implements PostJob, CheckProject {
                 : TIME_DEFAULT_VALUE;
 		LOG.info("waiting for Compute Engine task:"+strwaitingtime+" minutes");
 		try{ 
-			int b=Integer.valueOf(strwaitingtime).intValue();
+			int b=Integer.parseInt(strwaitingtime);
 			int waitingtime=b*60*1000;
 			Thread.sleep(waitingtime);
 		}

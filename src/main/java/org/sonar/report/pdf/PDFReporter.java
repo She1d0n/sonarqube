@@ -31,7 +31,6 @@ import org.sonar.report.pdf.builder.ProjectBuilder;
 import org.sonar.report.pdf.entity.Project;
 import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.Credentials;
-import org.sonar.report.pdf.util.MetricKeys;
 import org.sonarqube.ws.client.WSClient;
 
 import com.lowagie.text.BadElementException;
@@ -168,30 +167,7 @@ public abstract class PDFReporter implements Serializable {
         return project;
     }
 
-    /**
-     * Gets complexity distribution
-     * 
-     * @param project
-     *            project
-     * @return Image
-     */
-    protected Image getCCNDistribution(final Project project) {
-        String data;
-        if (project.getMeasure(MetricKeys.FILE_COMPLEXITY_DISTRIBUTION).getDataValue() != null) {
-            data = project.getMeasure(MetricKeys.FILE_COMPLEXITY_DISTRIBUTION).getDataValue();
-        } else {
-            return null;
-        }
-        // not usable from 6.0 version
-        /*
-        ComplexityDistributionBuilder complexityDistributionBuilder = ComplexityDistributionBuilder
-                .getInstance(credentials.getUrl());
-        ComplexityDistribution ccnDist = new ComplexityDistribution(data);
-        return complexityDistributionBuilder.getGraphic(ccnDist);
-        */
-        return null;
-    }
-
+ 
     public String getTextProperty(final String key) {
         return getLangProperties().getProperty(key);
     }

@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
-import java.lang.Math;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,12 +49,10 @@ import org.sonar.report.pdf.util.MetricKeys;
 import org.sonarqube.ws.client.WSClient;
 import org.sonarqube.ws.model.Issue;
 import org.sonarqube.ws.model.Issues;
-import org.sonarqube.ws.model.Paging;
 import org.sonarqube.ws.model.Resource;
 import org.sonarqube.ws.query.IssueQuery;
 import org.sonarqube.ws.query.ResourceQuery;
 import org.sonarqube.ws.query.RuleQuery;
-import org.sonarqube.ws.client.unmarshallers.JsonUtils;
 
 /**
  * Builder for the whole project
@@ -196,46 +193,43 @@ public class ProjectBuilder extends AbstractBuilder {
         Measures measures = measuresBuilder.initMeasuresByProjectKey(project.getKey());
         project.setMeasures(measures);
     }
+    
+    
 
     private void initMostViolatedRules(final Project project) throws ReportException {
         LOG.info("    Retrieving most violated rules");
         LOG.debug("Accessing Sonar: getting most violated rules");
-        String[] severities = Severity.getSeverityArray();
+
 
         Map<String, IssueBean> issues = new HashMap<>();
         ValueComparator bvc = new ValueComparator(issues);
         TreeMap<String, IssueBean> sortedMap = new TreeMap<>(bvc);
         // Reverse iteration to get violations with upper level first
-		int Size = 1;
-		List<Issue> issuesByLevel = new ArrayList<Issue>();
-        for (int i = 1;i<=Size; i++) {
-			LOG.debug("i ====" + i );
-			List<Issue> tempissuesByLevel = new ArrayList<Issue>();
+		int size = 1;
+		List<Issue> issuesByLevel = new ArrayList<>();
+        for (int i = 1;i<=size; i++) {
+			List<Issue> tempissuesByLevel = new ArrayList<>();
             IssueQuery query = IssueQuery.create();
             query.componentKeys(project.getKey());
-            //query.severities(severities[4]);
 			query.resolved(false);
 			query.pageSize(500);
 			query.pageIndex(i);
             Issues result = sonar.find(query);
 			int total=result.getPaging().total();
-			Size=(int)Math.ceil((double)total/500);
-			LOG.debug("Pagingtotal====== " + result.getPaging().total()+"  "+Size);
+			size=(int)Math.ceil((double)total/500);
+			LOG.debug("Pagingtotal====== " + result.getPaging().total()+"  "+size);
 			tempissuesByLevel = result.getIssues();
 			issuesByLevel.addAll(tempissuesByLevel);
 		}
          if (issuesByLevel != null && !issuesByLevel.isEmpty()) {
-            int count = initMostViolatedRulesFromNode(issuesByLevel, issues);
-            LOG.info("\t " + count  +" violations");
+            initMostViolatedRulesFromNode(issuesByLevel, issues);
          } else {
             LOG.debug("There is no result on select //resources/resource");
             LOG.debug("There are no violations");
          }
-       // }
+
         // sort the items of the map by list size
-        LOG.debug("unsorted map: " + issues);
         sortedMap.putAll(issues);
-        LOG.debug("sorted map: " + sortedMap);
         for (Entry<String, IssueBean> entry : sortedMap.entrySet()) {
             String ruleKey = entry.getKey();
             RuleQuery query = RuleQuery.create(ruleKey);
@@ -263,6 +257,7 @@ public class ProjectBuilder extends AbstractBuilder {
         Rule rule = new Rule();
         rule.setKey(ruleNode.getKey());
         rule.setName(ruleNode.getName());
+        rule.setDescription(ruleNode.getDescription());
         rule.setSeverity(entry.getValue().getSeverity());
         rule.setViolationsNumber(Integer.toString(entry.getValue().getIssues().size()));
         // setTopViolations
@@ -421,7 +416,7 @@ public class ProjectBuilder extends AbstractBuilder {
          * 
          */
         private static final long serialVersionUID = -8156307906104648499L;
-        Map<String, IssueBean> base;
+        private  Map<String, IssueBean> base;
 
         public ValueComparator(Map<String, IssueBean> base) {
             this.base = base;

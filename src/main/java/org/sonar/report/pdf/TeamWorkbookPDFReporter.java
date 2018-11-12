@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+
 import org.sonar.report.pdf.entity.Project;
 import org.sonar.report.pdf.entity.Rule;
 import org.sonar.report.pdf.entity.Violation;
@@ -78,7 +79,7 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
                 List<String> files = new LinkedList<>();
                 List<String> lines = new LinkedList<>();
                 addViolation(rule, files, lines);
-                section.add(createViolationsDetailedTable(rule.getName(), files, lines));
+                section.add(createViolationsDetailedTable(rule.getName(),rule.getDescription(), files, lines));
             }
         }
     }
@@ -114,7 +115,7 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
      *            violated lines
      * @return The table (iText table) ready to add to the document
      */
-    private PdfPTable createViolationsDetailedTable(final String ruleName, final List<String> files,
+    private PdfPTable createViolationsDetailedTable(final String ruleName,final String ruleDesc, final List<String> files,
             final List<String> lines) {
 
         PdfPTable table = new PdfPTable(10);
@@ -124,6 +125,15 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
         table.getDefaultCell().setColspan(9);
         table.getDefaultCell().setBackgroundColor(Color.WHITE);
         table.addCell(new Phrase(ruleName, Style.NORMAL_FONT));
+        String html = ruleDesc.replaceAll("<.*?>", " ").replaceAll("", "");
+        html = html.replaceAll("<.*?", "");  
+        table.getDefaultCell().setColspan(2);
+        table.getDefaultCell().setBackgroundColor(new Color(255, 228, 181));
+        table.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_RULE_DESC), Style.NORMAL_FONT));
+        table.getDefaultCell().setColspan(8);
+        table.getDefaultCell().setBackgroundColor(Color.WHITE);
+        table.addCell(new Phrase(html, Style.NORMAL_FONT));
+
         table.getDefaultCell().setColspan(10);
         table.getDefaultCell().setBackgroundColor(Color.GRAY);
         table.addCell("");

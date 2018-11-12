@@ -22,11 +22,10 @@ package org.sonar.report.pdf;
 import java.awt.Color;
 import java.util.Iterator;
 import java.util.List;
-import java.net.URL;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
@@ -140,9 +139,7 @@ public class Style {
 
 	public static BaseFont setfont() {
 		try{
-		//BaseFont bfChineseSong = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED); 
-        BaseFont bfChinese = BaseFont.createFont(PDFResources.CHINESE_FONT_FILE, BaseFont.IDENTITY_H, BaseFont.EMBEDDED); 
-		return bfChinese; 
+		return BaseFont.createFont(PDFResources.CHINESE_FONT_FILE, BaseFont.IDENTITY_H, BaseFont.EMBEDDED); 
 		}catch(Exception e){
 			 LOG.error("Can not generate yaheiChinese Font", e);
 			 return null;
@@ -153,6 +150,15 @@ public class Style {
     public static void noBorderTable(final PdfPTable table) {
         table.getDefaultCell().setBorderColor(Color.WHITE);
     }
+    
+    public static void alignCenterTable(final PdfPTable table) {
+    	 table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+    }
+    
+    public static void alignRightTable(final PdfPTable table) {
+   	 table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
+   }
+
 
     /**
      * This method makes a simple table with content.

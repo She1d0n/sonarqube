@@ -27,7 +27,7 @@ import java.util.Map;
  *
  */
 public final class SeverityLookup {
-    protected static final Map<String, Severity> lookup = new HashMap<String, Severity>();
+    protected static final Map<String, Severity> lookup = new HashMap<>();
 
     private SeverityLookup() {
         super();

@@ -39,7 +39,7 @@ public class Rule implements Entity {
     private String name;
 
     // Rule description
-    private String description;
+    private String htmlDesc;
 
     // Severity
     private Severity severity;
@@ -57,7 +57,7 @@ public class Rule implements Entity {
     }
 
     public String getDescription() {
-        return description;
+        return htmlDesc;
     }
 
     public List<Violation> getTopViolations() {
@@ -68,8 +68,8 @@ public class Rule implements Entity {
         this.name = name;
     }
 
-    public void setDescription(final String description) {
-        this.description = description;
+    public void setDescription(final String htmlDesc) {
+        this.htmlDesc = htmlDesc;
     }
 
     public void setTopViolations(final List<Violation> violations) {
@@ -107,5 +107,7 @@ public class Rule implements Entity {
     public void setSeverity(Severity severity) {
         this.severity = severity;
     }
+
+
 
 }

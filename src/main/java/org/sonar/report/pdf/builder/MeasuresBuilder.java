@@ -21,7 +21,6 @@ package org.sonar.report.pdf.builder;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -166,12 +165,11 @@ public class MeasuresBuilder extends AbstractBuilder {
             throws ReportException {
 
         String[] measuresAsArray = measuresAsString.toArray(new String[measuresAsString.size()]);
-        //LOG.debug(Arrays.toString(measuresAsArray));
         ResourceQuery query = ResourceQuery.createForMetrics(projectKey, measuresAsArray);
         query.setDepth(0);
         query.setIncludeTrends(true);
         List<Resource> resources = sonar.findAll(query);
-		//LOG.info("resource=============="+resources);
+
         if (resources != null && resources.size() == 1) {
             this.addAllMeasuresFromDocument(projectKey, measures, resources.get(0));
         } else {

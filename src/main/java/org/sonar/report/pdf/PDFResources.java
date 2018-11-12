@@ -78,6 +78,10 @@ public final class PDFResources implements Serializable {
     public static final String GENERAL_CRITICAL_VIOLATIONS = "general.criticalViolations";
 
     public static final String GENERAL_MAJOR_VIOLATIONS = "general.majorViolations";
+    
+    public static final String GENERAL_MINOR_VIOLATIONS = "general.minorViolations";
+    
+    public static final String GENERAL_INFO_VIOLATIONS = "general.infoViolations";
 
     public static final String GENERAL_TECHNICAL_DEBT = "general.technicalDebt";
 	
@@ -90,14 +94,19 @@ public final class PDFResources implements Serializable {
     public static final String GENERAL_ERRORS = "general.errors";
 
     public static final String GENERAL_FAILURES = "general.failures";
+    
+    public static final String GENERAL_SKIPS = "general.skips";
 
     public static final String GENERAL_TEST_SUCCESS = "general.testSuccess";
 
     public static final String GENERAL_TESTS = "general.tests";
 
-    public static final String GENERAL_COVERAGE = "general.coverage";
+    public static final String GENERAL_BRANCHCOVERAGE = "general.branchcoverage";
 
     public static final String GENERAL_CODE_COVERAGE = "general.codeCoverage";
+    
+    public static final String GENERAL_LINE_COVERAGE = "general.linecoverage";
+    
 
     public static final String GENERAL_DYNAMIC_ANALYSIS = "general.dynamicAnalysis";
 
@@ -114,10 +123,12 @@ public final class PDFResources implements Serializable {
     public static final String GENERAL_DUPLICATED_LINES = "general.duplicatedLines";
 
     public static final String GENERAL_METHODS = "general.methods";
+    public static final String GENERAL_SIZE = "general.size";
 
     public static final String GENERAL_CLASSES = "general.classes";
-
+    public static final String GENERAL_FILES = "general.files";
     public static final String GENERAL_PACKAGES = "general.packages";
+    public static final String GENERAL_LINES = "general.lines";
 
     public static final String GENERAL_LINES_OF_CODE = "general.linesOfCode";
 
@@ -134,6 +145,7 @@ public final class PDFResources implements Serializable {
     public static final String GENERAL_LINE = "general.line";
     public static final String GENERAL_FILE = "general.file";
     public static final String GENERAL_RULE = "general.rule";
+    public static final String GENERAL_RULE_DESC = "general.ruledesc";
 
     public static final String MAIN_TEXT_MISC_OVERVIEW = "main.text.misc.overview";
 

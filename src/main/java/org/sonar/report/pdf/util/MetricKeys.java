@@ -27,8 +27,8 @@ public enum MetricKeys {
 
     PROFILE("quality_profiles"), DUPLICATED_LINES("duplicated_lines"), DUPLICATED_BLOCKS(
             "duplicated_blocks"), DUPLICATED_FILES("duplicated_files"), CLASSES("classes"), COMMENT_LINES(
-                    "comment_lines"), COMPLEXITY("complexity"), FUNCTIONS("functions"), NCLOC("ncloc"), DIRECTORIES(
-                            "directories"), COVERAGE("coverage"), TEST_EXECUTION_TIME(
+                    "comment_lines"), COMPLEXITY("complexity"), FUNCTIONS("functions"), NCLOC("ncloc"),LINES("lines"), DIRECTORIES(
+                            "directories"), FILES("files"),COVERAGE("coverage"), LINE_COVERAGE("line_coverage"), BRANCH_COVERAGE("branch_coverage"),TEST_EXECUTION_TIME(
                                     "test_execution_time"), SKIPPED_TESTS("skipped_tests"), TESTS("tests"), TEST_ERRORS(
                                             "test_errors"), TEST_FAILURES("test_failures"), TEST_SUCCESS_DENSITY(
                                                     "test_success_density"), VIOLATIONS(
@@ -38,7 +38,8 @@ public enum MetricKeys {
 																"code_smells"),FILE_COMPLEXITY_DISTRIBUTION(
                                                                     "file_complexity_distribution"), DUPLICATED_LINES_DENSITY(
                                                                             "duplicated_lines_density"), CLASS_COMPLEXITY(
-                                                                                    "class_complexity"), FUNCTION_COMPLEXITY(
+                                                                                    "class_complexity"),FILE_COMPLEXITY(
+                                                                                            "file_complexity"), FUNCTION_COMPLEXITY(
                                                                                             "function_complexity"), COMMENT_LINES_DENSITY(
                                                                                                     "comment_lines_density"), TECHNICAL_DEBT(
                                                                                                             "sqale_index"), RELIABILITY_REMEDIATION_EFFORT

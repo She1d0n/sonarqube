@@ -215,7 +215,6 @@ public class ExecutivePDFReporter extends PDFReporter {
         printMostComplexFiles(project, sectionN2);
         printMostDuplicatedFiles(project, sectionN2);
         printSpecificData(project, chapter);
-        printCCNDistribution(project, chapter);
     }
 
     /**
@@ -249,7 +248,7 @@ public class ExecutivePDFReporter extends PDFReporter {
         // Static Analysis
         section.add(createStaticAnalysis(project));
         // Dynamic Analysis
-        //section.add(createDynamicAnalysis(project));
+        section.add(createDynamicAnalysis(project));
         // Coding issues analysis
         section.add(createCodingRuleViolations(project));
         // Coding issues details
@@ -264,21 +263,28 @@ public class ExecutivePDFReporter extends PDFReporter {
      * @return The table (iText table) ready to add to the document
      */
     private PdfPTable createCodingRuleViolationsDetails(final Project project) {
-        PdfPTable detailCodingRulesViolationsTable = new PdfPTable(4);
+        PdfPTable detailCodingRulesViolationsTable = new PdfPTable(6);
         Style.noBorderTable(detailCodingRulesViolationsTable);
         detailCodingRulesViolationsTable.setSpacingBefore(10);
 		// total violations
 		detailCodingRulesViolationsTable.addCell(
-				createTable(project, PDFResources.GENERAL_VIOLATIONS, MetricKeys.VIOLATIONS, false));
+				createTable(project, PDFResources.GENERAL_VIOLATIONS, MetricKeys.VIOLATIONS));
         // blocker violations
         detailCodingRulesViolationsTable.addCell(
-                createTable(project, PDFResources.GENERAL_BLOCKER_VIOLATIONS, MetricKeys.BLOCKER_VIOLATIONS, false));
+                createTable(project, PDFResources.GENERAL_BLOCKER_VIOLATIONS, MetricKeys.BLOCKER_VIOLATIONS));
         // critical violations
         detailCodingRulesViolationsTable.addCell(
-                createTable(project, PDFResources.GENERAL_CRITICAL_VIOLATIONS, MetricKeys.CRITICAL_VIOLATIONS, false));
+                createTable(project, PDFResources.GENERAL_CRITICAL_VIOLATIONS, MetricKeys.CRITICAL_VIOLATIONS));
         // major violations
         detailCodingRulesViolationsTable.addCell(
-                createTable(project, PDFResources.GENERAL_MAJOR_VIOLATIONS, MetricKeys.MAJOR_VIOLATIONS, false));
+                createTable(project, PDFResources.GENERAL_MAJOR_VIOLATIONS, MetricKeys.MAJOR_VIOLATIONS));
+        // minor violations
+        detailCodingRulesViolationsTable.addCell(
+                createTable(project, PDFResources.GENERAL_MINOR_VIOLATIONS, MetricKeys.MINOR_VIOLATIONS));
+        // info violations
+        detailCodingRulesViolationsTable.addCell(
+                createTable(project, PDFResources.GENERAL_INFO_VIOLATIONS, MetricKeys.INFO_VIOLATIONS));
+        
         detailCodingRulesViolationsTable.setSpacingAfter(20);
         return detailCodingRulesViolationsTable;
     }
@@ -294,7 +300,8 @@ public class ExecutivePDFReporter extends PDFReporter {
      *            measure
      * @return The table (iText table) ready to add to the document
      */
-    private PdfPTable createTable(final Project project, String text, MetricKeys measure, boolean okWhenGrows) {
+
+    private PdfPTable createTable(final Project project, String text, MetricKeys measure) {
         PdfPTable criticalViolations = new PdfPTable(1);
         Style.noBorderTable(criticalViolations);
         criticalViolations.addCell(new Phrase(getTextProperty(text), Style.DASHBOARD_TITLE_FONT));
@@ -305,8 +312,8 @@ public class ExecutivePDFReporter extends PDFReporter {
                 .addCell(new Phrase(project.getMeasure(measure).getFormatValue(), Style.DASHBOARD_DATA_FONT));
 		criticalViolationsTendency.addCell("");
 
-        //criticalViolationsTendency
-        //        .addCell(getTendencyImage(project.getMeasure(measure).getQualitativeTendency(), false));
+        criticalViolationsTendency
+                .addCell(getTendencyImage(project.getMeasure(measure).getQualitativeTendency(), false));
 
         criticalViolations.addCell(criticalViolationsTendency);
         return criticalViolations;
@@ -327,9 +334,9 @@ public class ExecutivePDFReporter extends PDFReporter {
         Style.noBorderTable(bugsViolationsTable);
         bugsViolationsTable.setSpacingBefore(10);
 		bugsViolationsTable
-                .addCell(createTable(project, PDFResources.GENERAL_BUGS, MetricKeys.BUGS, false));       
+                .addCell(createTable(project, PDFResources.GENERAL_BUGS, MetricKeys.BUGS));       
 		bugsViolationsTable
-                .addCell(createTable(project, PDFResources.GENERAL_RELIABILITY_REMEDIATION_EFFORT, MetricKeys.RELIABILITY_REMEDIATION_EFFORT, false));
+                .addCell(createTable(project, PDFResources.GENERAL_RELIABILITY_REMEDIATION_EFFORT, MetricKeys.RELIABILITY_REMEDIATION_EFFORT));
         bugsViolationsTable.setSpacingAfter(10);
         codingRulesViolations.add(bugsViolationsTable);
 		//security
@@ -337,9 +344,9 @@ public class ExecutivePDFReporter extends PDFReporter {
         Style.noBorderTable(secutityViolationsTable);
         secutityViolationsTable.setSpacingBefore(10);		
 		secutityViolationsTable
-                .addCell(createTable(project, PDFResources.GENERAL_SECURITY, MetricKeys.SECURITY, false));
+                .addCell(createTable(project, PDFResources.GENERAL_SECURITY, MetricKeys.SECURITY));
 		secutityViolationsTable
-                .addCell(createTable(project, PDFResources.GENERAL_SECUTITY_REMEDIATION_EFFORT, MetricKeys.SECUTITY_REMEDIATION_EFFORT, false));
+                .addCell(createTable(project, PDFResources.GENERAL_SECUTITY_REMEDIATION_EFFORT, MetricKeys.SECUTITY_REMEDIATION_EFFORT));
         secutityViolationsTable.setSpacingAfter(10);
         codingRulesViolations.add(secutityViolationsTable);
 		//bad smell 
@@ -347,9 +354,9 @@ public class ExecutivePDFReporter extends PDFReporter {
         Style.noBorderTable(maintainabilityViolationsTable);
         maintainabilityViolationsTable.setSpacingBefore(10);				
 		maintainabilityViolationsTable
-                .addCell(createTable(project, PDFResources.GENERAL_MAINTAINABILITY, MetricKeys.MAINTAINABILITY, false));
+                .addCell(createTable(project, PDFResources.GENERAL_MAINTAINABILITY, MetricKeys.MAINTAINABILITY));
 		maintainabilityViolationsTable
-                .addCell(createTable(project, PDFResources.GENERAL_TECHNICAL_DEBT, MetricKeys.TECHNICAL_DEBT, false));
+                .addCell(createTable(project, PDFResources.GENERAL_TECHNICAL_DEBT, MetricKeys.TECHNICAL_DEBT));
         maintainabilityViolationsTable.setSpacingAfter(10);
         codingRulesViolations.add(maintainabilityViolationsTable);
         return codingRulesViolations;
@@ -363,45 +370,52 @@ public class ExecutivePDFReporter extends PDFReporter {
      * @return The paragraph (iText paragraph) ready to add to the document
      */
     private Paragraph createDynamicAnalysis(final Project project) {
+    	if (project.getMeasure(MetricKeys.TESTS).getFormatValue() == "0") {
+    		return new Paragraph("");
+    	}
         Paragraph dynamicAnalysis = new Paragraph(getTextProperty(PDFResources.GENERAL_DYNAMIC_ANALYSIS),
                 Style.UNDERLINED_FONT);
-        PdfPTable dynamicAnalysisTable = new PdfPTable(3);
+        PdfPTable dynamicAnalysisTable = new PdfPTable(4);
         Style.noBorderTable(dynamicAnalysisTable);
+        dynamicAnalysisTable.setWidthPercentage(90);
 
         PdfPTable codeCoverage = new PdfPTable(1);
         Style.noBorderTable(codeCoverage);
+        codeCoverage.addCell(new Phrase(project.getMeasure(MetricKeys.COVERAGE).getFormatValue(), Style.DASHBOARD_DATA_FONT));
         codeCoverage
                 .addCell(new Phrase(getTextProperty(PDFResources.GENERAL_CODE_COVERAGE), Style.DASHBOARD_TITLE_FONT));
-        PdfPTable codeCoverageTendency = new PdfPTable(2);
-        Style.noBorderTable(codeCoverageTendency);
-        codeCoverageTendency.getDefaultCell().setFixedHeight(Style.TENDENCY_ICONS_HEIGHT);
-        codeCoverageTendency.addCell(new Phrase(project.getMeasure(MetricKeys.COVERAGE).getFormatValue() + " "
-                + getTextProperty(PDFResources.GENERAL_COVERAGE), Style.DASHBOARD_DATA_FONT));
-        codeCoverageTendency
-                .addCell(getTendencyImage(project.getMeasure(MetricKeys.COVERAGE).getQualitativeTendency(), true));
-        codeCoverage.addCell(codeCoverageTendency);
-        codeCoverage.addCell(new Phrase(project.getMeasure(MetricKeys.TESTS).getFormatValue() + " "
-                + getTextProperty(PDFResources.GENERAL_TESTS), Style.DASHBOARD_DATA_FONT_2));
+       
+        PdfPTable unitCoverage = new PdfPTable(1);
+        Style.noBorderTable(unitCoverage);
+        unitCoverage.addCell(new Phrase(project.getMeasure(MetricKeys.TESTS).getFormatValue(), Style.DASHBOARD_DATA_FONT));
+        unitCoverage.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_TESTS), Style.DASHBOARD_TITLE_FONT));
 
-        PdfPTable testSuccess = new PdfPTable(1);
-        Style.noBorderTable(testSuccess);
-        testSuccess.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_TEST_SUCCESS), Style.DASHBOARD_TITLE_FONT));
-        PdfPTable testSuccessTendency = new PdfPTable(2);
-        Style.noBorderTable(testSuccessTendency);
-        testSuccessTendency.getDefaultCell().setFixedHeight(Style.TENDENCY_ICONS_HEIGHT);
-        testSuccessTendency.addCell(new Phrase(project.getMeasure(MetricKeys.TEST_SUCCESS_DENSITY).getFormatValue(),
-                Style.DASHBOARD_DATA_FONT));
-        testSuccessTendency.addCell(
-                getTendencyImage(project.getMeasure(MetricKeys.TEST_SUCCESS_DENSITY).getQualitativeTendency(), true));
-        testSuccess.addCell(testSuccessTendency);
-        testSuccess.addCell(new Phrase(project.getMeasure(MetricKeys.TEST_FAILURES).getFormatValue() + " "
-                + getTextProperty(PDFResources.GENERAL_FAILURES), Style.DASHBOARD_DATA_FONT_2));
-        testSuccess.addCell(new Phrase(project.getMeasure(MetricKeys.TEST_ERRORS).getFormatValue() + " "
-                + getTextProperty(PDFResources.GENERAL_ERRORS), Style.DASHBOARD_DATA_FONT_2));
+        PdfPTable testname = new PdfPTable(1);
+        Style.noBorderTable(testname);  
+        testname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_LINE_COVERAGE), Style.DASHBOARD_DATA_FONT_2));
+        testname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_BRANCHCOVERAGE), Style.DASHBOARD_DATA_FONT_2));
+        testname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_FAILURES), Style.DASHBOARD_DATA_FONT_2));
+        testname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_ERRORS), Style.DASHBOARD_DATA_FONT_2));
+        testname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_SKIPS), Style.DASHBOARD_DATA_FONT_2));
+        testname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_TEST_SUCCESS), Style.DASHBOARD_DATA_FONT_2));       
+
+        
+        PdfPTable testvalue = new PdfPTable(1);
+        Style.noBorderTable(testvalue);
+        Style.alignRightTable(testvalue);
+        testvalue.addCell(new Phrase(project.getMeasure(MetricKeys.LINE_COVERAGE).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+        testvalue.addCell(new Phrase(project.getMeasure(MetricKeys.BRANCH_COVERAGE).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+        testvalue.addCell(new Phrase(project.getMeasure(MetricKeys.TEST_FAILURES).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+        testvalue.addCell(new Phrase(project.getMeasure(MetricKeys.TEST_ERRORS).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+        testvalue.addCell(new Phrase(project.getMeasure(MetricKeys.SKIPPED_TESTS).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+        testvalue.addCell(new Phrase(project.getMeasure(MetricKeys.TEST_SUCCESS_DENSITY).getFormatValue(),Style.DASHBOARD_DATA_FONT_2));
+
 
         dynamicAnalysisTable.setSpacingBefore(10);
         dynamicAnalysisTable.addCell(codeCoverage);
-        dynamicAnalysisTable.addCell(testSuccess);
+        dynamicAnalysisTable.addCell(unitCoverage);
+        dynamicAnalysisTable.addCell(testname);
+        dynamicAnalysisTable.addCell(testvalue);
         dynamicAnalysisTable.addCell("");
         dynamicAnalysisTable.setSpacingAfter(20);
         dynamicAnalysis.add(dynamicAnalysisTable);
@@ -416,76 +430,20 @@ public class ExecutivePDFReporter extends PDFReporter {
      * @return The paragraph (iText paragraph) ready to add to the document
      */
     private Paragraph createStaticAnalysis(final Project project) {
-        Paragraph staticAnalysis = new Paragraph(getTextProperty(PDFResources.GENERAL_STATIC_ANALYSIS),
-                Style.UNDERLINED_FONT);
-        PdfPTable staticAnalysisTable = new PdfPTable(3);
-        staticAnalysisTable.getDefaultCell().setBorderColor(Color.WHITE);
-
-        PdfPTable linesOfCode = new PdfPTable(1);
-        Style.noBorderTable(linesOfCode);
-        linesOfCode
-                .addCell(new Phrase(getTextProperty(PDFResources.GENERAL_LINES_OF_CODE), Style.DASHBOARD_TITLE_FONT));
-        PdfPTable linesOfCodeTendency = new PdfPTable(2);
-        Style.noBorderTable(linesOfCodeTendency);
-        linesOfCodeTendency.getDefaultCell().setFixedHeight(Style.TENDENCY_ICONS_HEIGHT);
-        linesOfCodeTendency
-                .addCell(new Phrase(project.getMeasure(MetricKeys.NCLOC).getFormatValue(), Style.DASHBOARD_DATA_FONT));
-		linesOfCodeTendency.addCell("");
-        
-		//linesOfCodeTendency.addCell(
-        //        getTendencyImage(project.getMeasure(MetricKeys.DUPLICATED_LINES).getQualitativeTendency(), false));
-
-        linesOfCode.addCell(linesOfCodeTendency);
-        linesOfCode.addCell(new Phrase(project.getMeasure(MetricKeys.DIRECTORIES).getFormatValue() + " "
-                + getTextProperty(PDFResources.GENERAL_PACKAGES), Style.DASHBOARD_DATA_FONT_2));
-        linesOfCode.addCell(new Phrase(project.getMeasure(MetricKeys.CLASSES).getFormatValue() + " "
-                + getTextProperty(PDFResources.GENERAL_CLASSES), Style.DASHBOARD_DATA_FONT_2));
-        linesOfCode.addCell(new Phrase(project.getMeasure(MetricKeys.FUNCTIONS).getFormatValue() + " "
-                + getTextProperty(PDFResources.GENERAL_METHODS), Style.DASHBOARD_DATA_FONT_2));
-        linesOfCode.addCell(new Phrase(project.getMeasure(MetricKeys.DUPLICATED_LINES_DENSITY).getFormatValue() + " "
-                + getTextProperty(PDFResources.GENERAL_DUPLICATED_LINES), Style.DASHBOARD_DATA_FONT_2));
-
-        PdfPTable comments = new PdfPTable(1);
-        Style.noBorderTable(comments);
-        comments.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_COMMENTS), Style.DASHBOARD_TITLE_FONT));
-        PdfPTable commentsTendency = new PdfPTable(2);
-        commentsTendency.getDefaultCell().setFixedHeight(Style.TENDENCY_ICONS_HEIGHT);
-        Style.noBorderTable(commentsTendency);
-        commentsTendency.addCell(new Phrase(project.getMeasure(MetricKeys.COMMENT_LINES_DENSITY).getFormatValue(),
-                Style.DASHBOARD_DATA_FONT));
-       
-		commentsTendency.addCell("");
-		//commentsTendency.addCell(
-         //       getTendencyImage(project.getMeasure(MetricKeys.COMMENT_LINES_DENSITY).getQualitativeTendency(), true));
-        comments.addCell(commentsTendency);
-        comments.addCell(new Phrase(project.getMeasure(MetricKeys.COMMENT_LINES).getFormatValue() + " "
-                + getTextProperty(PDFResources.GENERAL_COMMENT_LINES), Style.DASHBOARD_DATA_FONT_2));
-
-        PdfPTable complexity = new PdfPTable(1);
-        Style.noBorderTable(complexity);
-        complexity.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_COMPLEXITY), Style.DASHBOARD_TITLE_FONT));
-        PdfPTable complexityTendency = new PdfPTable(2);
-        complexityTendency.getDefaultCell().setFixedHeight(Style.TENDENCY_ICONS_HEIGHT);
-        Style.noBorderTable(complexityTendency);
-        complexityTendency.addCell(new Phrase(project.getMeasure(MetricKeys.COMPLEXITY).getFormatValue(),
-                Style.DASHBOARD_DATA_FONT));
-        complexityTendency.addCell("");
-		//complexityTendency.addCell(
-        //        getTendencyImage(project.getMeasure(MetricKeys.FUNCTION_COMPLEXITY).getQualitativeTendency(), false));
-        complexity.addCell(complexityTendency);
-        complexity.addCell(new Phrase(project.getMeasure(MetricKeys.CLASS_COMPLEXITY).getFormatValue() + " "
-                + getTextProperty(PDFResources.GENERAL_PER_CLASS), Style.DASHBOARD_DATA_FONT_2));
-        complexity.addCell(new Phrase(project.getMeasure(MetricKeys.FUNCTION_COMPLEXITY).getFormatValue() + " "
-                + getTextProperty(PDFResources.GENERAL_DECISION_POINTS), Style.DASHBOARD_DATA_FONT_2));
-
-        staticAnalysisTable.setSpacingBefore(10);
-        staticAnalysisTable.addCell(linesOfCode);
-        staticAnalysisTable.addCell(comments);
-        staticAnalysisTable.addCell(complexity);
-        staticAnalysisTable.setSpacingAfter(20);
-        staticAnalysis.add(staticAnalysisTable);
+    	Paragraph staticAnalysis = new Paragraph();
+    	staticAnalysis.add(new Chunk(getTextProperty(PDFResources.GENERAL_STATIC_ANALYSIS),
+                Style.UNDERLINED_FONT));
+    	staticAnalysis.add(new Chunk("\n",Style.NORMAL_FONT));        
+        staticAnalysis.add(new Chunk(getTextProperty(PDFResources.GENERAL_SIZE),Style.NORMAL_FONT));
+        staticAnalysis.add(createSizeAnalysis(project));
+        staticAnalysis.add(new Chunk("\n",Style.NORMAL_FONT));
+        staticAnalysis.add(new Chunk(getTextProperty(PDFResources.GENERAL_COMPLEXITY),Style.NORMAL_FONT));
+        staticAnalysis.add(createComplexityAnalysis(project));
+        staticAnalysis.add(new Chunk(getTextProperty(PDFResources.GENERAL_COMMENTS),Style.NORMAL_FONT));
+        staticAnalysis.add(createDocumentationAnalysis(project));
         return staticAnalysis;
     }
+
 
     /**
      * Print most duplicated files for a project, and the target section
@@ -587,6 +545,131 @@ public class ExecutivePDFReporter extends PDFReporter {
                 getTextProperty(PDFResources.GENERAL_NO_VIOLATED_FILES));
         section.add(mostViolatedFilesTable);
     }
+    
+    /**
+     * Print size for a project
+     * 
+     * @param project
+     *            project
+     * @return The paragraph (iText paragraph) ready to add to the document
+     */
+    private PdfPTable createSizeAnalysis(final Project project) {
+        PdfPTable staticAnalysisTable = new PdfPTable(3);
+        Style.noBorderTable(staticAnalysisTable);
+        staticAnalysisTable.setWidthPercentage(90);
+        
+        PdfPTable linesOfCode = new PdfPTable(1);
+        Style.noBorderTable(linesOfCode);
+        Style.alignCenterTable(linesOfCode);
+        linesOfCode.addCell(new Phrase(project.getMeasure(MetricKeys.NCLOC).getFormatValue(), Style.DASHBOARD_DATA_FONT));
+        linesOfCode.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_LINES_OF_CODE), Style.NORMAL_FONT));   
+        
+        PdfPTable linesOfCodename = new PdfPTable(1);
+        Style.noBorderTable(linesOfCodename);
+        linesOfCodename.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_LINES), Style.DASHBOARD_DATA_FONT_2));
+        linesOfCodename.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_METHODS), Style.DASHBOARD_DATA_FONT_2));
+        linesOfCodename.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_CLASSES), Style.DASHBOARD_DATA_FONT_2));
+        linesOfCodename.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_FILES), Style.DASHBOARD_DATA_FONT_2));
+        linesOfCodename.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_PACKAGES), Style.DASHBOARD_DATA_FONT_2));
+        linesOfCodename.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_DUPLICATED_LINES), Style.DASHBOARD_DATA_FONT_2));
+
+        PdfPTable linesOfCodevalue = new PdfPTable(1);
+        Style.noBorderTable(linesOfCodevalue);
+        Style.alignCenterTable(linesOfCodevalue);
+        linesOfCodevalue.addCell(new Phrase(project.getMeasure(MetricKeys.LINES).getFormatValue() , Style.DASHBOARD_DATA_FONT_2));
+        linesOfCodevalue.addCell(new Phrase(project.getMeasure(MetricKeys.FUNCTIONS).getFormatValue() , Style.DASHBOARD_DATA_FONT_2));
+        linesOfCodevalue.addCell(new Phrase(project.getMeasure(MetricKeys.CLASSES).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+        linesOfCodevalue.addCell(new Phrase(project.getMeasure(MetricKeys.FILES).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+        linesOfCodevalue.addCell(new Phrase(project.getMeasure(MetricKeys.DIRECTORIES).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+        linesOfCodevalue.addCell(new Phrase(project.getMeasure(MetricKeys.DUPLICATED_LINES_DENSITY).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+
+        staticAnalysisTable.setSpacingBefore(10);
+        staticAnalysisTable.addCell(linesOfCode);
+        staticAnalysisTable.addCell(linesOfCodename);
+        staticAnalysisTable.addCell(linesOfCodevalue);
+        staticAnalysisTable.setSpacingAfter(20);
+        return staticAnalysisTable;
+    }
+    
+    
+    /**
+     * Print size for a project
+     * 
+     * @param project
+     *            project
+     * @return The paragraph (iText paragraph) ready to add to the document
+     */
+    private PdfPTable createComplexityAnalysis(final Project project) {
+        PdfPTable staticAnalysisTable = new PdfPTable(3);
+        Style.noBorderTable(staticAnalysisTable);
+        staticAnalysisTable.setWidthPercentage(90);
+               
+        PdfPTable complexity = new PdfPTable(1);
+        Style.noBorderTable(complexity);
+        Style.alignCenterTable(complexity);
+        complexity.addCell(new Phrase(project.getMeasure(MetricKeys.COMPLEXITY).getFormatValue(),
+                Style.DASHBOARD_DATA_FONT));
+        complexity.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_COMPLEXITY), Style.NORMAL_FONT));
+        
+        PdfPTable complexityname = new PdfPTable(1);
+        Style.noBorderTable(complexityname);
+       
+        complexityname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_PER_CLASS), Style.DASHBOARD_DATA_FONT_2));
+        complexityname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_DECISION_POINTS), Style.DASHBOARD_DATA_FONT_2));
+        complexityname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_FILES), Style.DASHBOARD_DATA_FONT_2));
+        
+        PdfPTable complexityvalue = new PdfPTable(1);
+        Style.noBorderTable(complexityvalue);
+        Style.alignCenterTable(complexityvalue);
+        complexityvalue.addCell(new Phrase(project.getMeasure(MetricKeys.CLASS_COMPLEXITY).getFormatValue(),Style.DASHBOARD_DATA_FONT_2));
+        complexityvalue.addCell(new Phrase(project.getMeasure(MetricKeys.FUNCTION_COMPLEXITY).getFormatValue(),Style.DASHBOARD_DATA_FONT_2));
+        complexityvalue.addCell(new Phrase(project.getMeasure(MetricKeys.FILE_COMPLEXITY).getFormatValue(),Style.DASHBOARD_DATA_FONT_2));
+        
+        staticAnalysisTable.setSpacingBefore(10);
+        staticAnalysisTable.addCell(complexity);
+        staticAnalysisTable.addCell(complexityname);
+        staticAnalysisTable.addCell(complexityvalue);
+        staticAnalysisTable.setSpacingAfter(20);
+        return staticAnalysisTable;
+    }
+
+    
+    /**
+     * Print size for a project
+     * 
+     * @param project
+     *            project
+     * @return The paragraph (iText paragraph) ready to add to the document
+     */
+    private PdfPTable createDocumentationAnalysis(final Project project) {  
+        PdfPTable staticAnalysisTable = new PdfPTable(3);
+        Style.noBorderTable(staticAnalysisTable);
+        staticAnalysisTable.setWidthPercentage(90);
+        PdfPTable comments = new PdfPTable(1);
+        Style.noBorderTable(comments);
+        Style.alignCenterTable(comments); 
+        comments.addCell(new Phrase(project.getMeasure(MetricKeys.COMMENT_LINES_DENSITY).getFormatValue(),
+                Style.DASHBOARD_DATA_FONT));
+        comments.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_COMMENTS), Style.DASHBOARD_TITLE_FONT));
+        
+        
+        PdfPTable commentsname = new PdfPTable(1);
+        Style.noBorderTable(commentsname);
+        commentsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_COMMENT_LINES), Style.DASHBOARD_DATA_FONT_2));
+        
+        PdfPTable commentsvalue = new PdfPTable(1);
+        Style.noBorderTable(commentsvalue);
+        Style.alignCenterTable(commentsvalue);
+        commentsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.COMMENT_LINES).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+        
+        staticAnalysisTable.setSpacingBefore(10);
+        staticAnalysisTable.addCell(comments);
+        staticAnalysisTable.addCell(commentsname);
+        staticAnalysisTable.addCell(commentsvalue);
+        staticAnalysisTable.setSpacingAfter(20);
+        return staticAnalysisTable;
+    }
+
 
     /**
      * @see org.sonar.report.pdf.PDFReporter#printTocTitle(org.sonar.report.pdf.Toc)
@@ -602,28 +685,6 @@ public class ExecutivePDFReporter extends PDFReporter {
         } catch (DocumentException e) {
             throw new ReportException("Error printing TOC", e);
         }
-    }
-
-    /**
-     * Prints the complexity distribution for a project
-     * 
-     * @param project
-     *            project
-     * @param chapter
-     *            target chapter
-     */
-    private void printCCNDistribution(Project project, Chapter chapter) {
-        Image ccnDistGraph = getCCNDistribution(project);
-        if (ccnDistGraph != null) {
-            Section section = chapter.addSection(
-                    new Paragraph(getTextProperty(PDFResources.GENERAL_VIOLATIONS_DASHBOARD), Style.TITLE_FONT));
-            section.add(ccnDistGraph);
-            Paragraph imageFoot = new Paragraph(getTextProperty(PDFResources.METRICS_CCN_CLASSES_COUNT_DISTRIBUTION),
-                    Style.FOOT_FONT);
-            imageFoot.setAlignment(Paragraph.ALIGN_CENTER);
-            section.add(imageFoot);
-        }
-
     }
 
     /**
