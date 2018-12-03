@@ -1,39 +1,41 @@
 Sonar PDF Report Plugin
 =========================
 
-Version compatbility : 5.3--5.6. Use maven to build from repository
+适用SonarQube版本 : 5.3--5.6。6.x以上版本未验证。
 
 ## Description / Features
 
-Generate a project quality report in PDF format with the most relevant information from SonarQube web interface. The report aims to be a deliverable as part of project documentation.
+本插件生成PDF格式的sonarqube报告.
 
-The report contains:
+报告包括以下内容:
 
-* Dashboard
-* Violations by categories
-* Hotspots:
-  * Most violated rules
-  * Most violated files
-  * Most complex classes
-  * Most duplicated files
-* Dashboard, violations and hotspots for all child modules (if they exists)
+* 概要
+* 静态分析
+* 动态分析
+* 编码问题
+* 热点:
+  * 违反最多的规则TOP10
+  * 违规最多的文件TOP5
+  * 复杂度最高的文件TOP5
+  * 重复行最多的文件TOP5
+* 子模块信息（只有在存在时生成）
 
 ## Installation
 
-1. Install the plugin into the SONARQUBE_HOME/extensions/plugins directory
-1. Restart SonarQube
+1. 将插件复制到SONARQUBE_HOME/extensions/plugins 目录
+1. 重启SonarQube
 
 ## Usage
 
-SonarQube PDF works as a post-job task. In this way, a PDF report is generated after each analysis in SonarQube.
+SonarQube PDF是一个 post-job任务. 因此，PDF 报告将在SonarQube分析结束后生成.
 
 ### Configuration
 
-You can skip report generation or select report type (executive or workbook) globally or at the project level. You can also provide an username/password if your project is secured by SonarQube user management:
+配置Skip为“否”时生成PDF报告功能启用。Time表示SonarQube分析多长时间后开始生成报告，默认为1分钟，若果分析时间超过1分钟，则需要调整Time。Time的时间设置必须大于SonarQube分析时长，否则可能无法生成报告或者生成报告不正确。
 
 ![Plugin Configuration](configuration.jpg?raw=true "Plugin Configuration")
 
 ### Download the report
 
-PDF report can be downloaded from the SonarQube GUI:
+PDF在仪表盘中下载，如果没有下载界面，需要在“配置控件”中添加该控件
 ![PDF Report example](output.jpg?raw=true "PDF Report example")
