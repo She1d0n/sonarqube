@@ -10,10 +10,9 @@
 
 	<groupId>org.sonarsource.sonarqube</groupId>
 	<artifactId>sonar-pdfreport-plugin</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 	<packaging>sonar-plugin</packaging>
 
-	<url>https://xxx</url>
 	<name>SonarQube PDF Report</name>
 	<description>SonarQube plugin for PDF reporting</description>
 	<inceptionYear>2010</inceptionYear>
@@ -24,25 +23,11 @@
 	<licenses>
 		<license>
 			<name>GNU LGPL 3</name>
-			<url>https://xxx</url>
+			<url>https://www.dcits.com</url>
 		</license>
 	</licenses>
 
-	<developers>
-		<developer>
-			<id>liujiey</id>
-			<name>liujiey</name>
-			<email>liujiey@dcits.com</email>
-			<organization>dcits</organization>
-			<url>http://www.dcits.com</url>
-			<roles>
-				<role>Project lead</role>
-				<role>Developer</role>
-			</roles>
-			<timezone>+8</timezone>
-		</developer>
-	</developers>
-
+	
 	<properties>
 		<sonar.pluginName>PDF Report</sonar.pluginName>
 		<sonar.pluginClass>org.sonar.report.pdf.plugin.PDFReportPlugin</sonar.pluginClass>
