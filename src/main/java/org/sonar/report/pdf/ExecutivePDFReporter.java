@@ -263,7 +263,7 @@ public class ExecutivePDFReporter extends PDFReporter {
      * @return The table (iText table) ready to add to the document
      */
     private PdfPTable createCodingRuleViolationsDetails(final Project project) {
-        PdfPTable detailCodingRulesViolationsTable = new PdfPTable(6);
+        PdfPTable detailCodingRulesViolationsTable = new PdfPTable(3);
         Style.noBorderTable(detailCodingRulesViolationsTable);
         detailCodingRulesViolationsTable.setSpacingBefore(10);
 		// total violations
@@ -370,7 +370,7 @@ public class ExecutivePDFReporter extends PDFReporter {
      * @return The paragraph (iText paragraph) ready to add to the document
      */
     private Paragraph createDynamicAnalysis(final Project project) {
-    	if (project.getMeasure(MetricKeys.TESTS).getFormatValue() == "0") {
+    	if (project.getMeasure(MetricKeys.TESTS).getFormatValue() == "N/A" || project.getMeasure(MetricKeys.TESTS).getFormatValue() == "0") {
     		return new Paragraph("");
     	}
         Paragraph dynamicAnalysis = new Paragraph(getTextProperty(PDFResources.GENERAL_DYNAMIC_ANALYSIS),
