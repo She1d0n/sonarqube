@@ -88,7 +88,7 @@ public class PDFPostJob implements PostJob, CheckProject {
         LOG.info("Executing decorator: PDF Report");
 		String strwaitingtime = settings.hasKey(WAITING_TIME) ? settings.getString(WAITING_TIME)
                 : TIME_DEFAULT_VALUE;
-		LOG.info("waiting for Compute Engine task:"+strwaitingtime+" minutes");
+		LOG.info("waiting for Compute Engine task: {} minutes",strwaitingtime);
 		try{ 
 			int b=Integer.parseInt(strwaitingtime);
 			int waitingtime=b*60*1000;

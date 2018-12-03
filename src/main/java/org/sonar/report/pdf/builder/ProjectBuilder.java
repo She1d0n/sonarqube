@@ -72,7 +72,6 @@ public class ProjectBuilder extends AbstractBuilder {
     private WSClient sonar;
 
     private Integer tableLimit;
-    private Integer detailsLimit;
 
     /**
      * Default constructor
@@ -90,7 +89,6 @@ public class ProjectBuilder extends AbstractBuilder {
             LOG.error("\nProblem loading report.properties.", e);
         }
         tableLimit = Integer.valueOf(config.getProperty(PDFResources.SONAR_TABLE_LIMIT));
-        detailsLimit = Integer.valueOf(config.getProperty(PDFResources.SONAR_DETAILS_LIMIT));
     }
 
     public static ProjectBuilder getInstance(final WSClient sonar) {
@@ -119,7 +117,7 @@ public class ProjectBuilder extends AbstractBuilder {
     public Project initializeProject(final String projectKey) throws ReportException {
         Project project = new Project(projectKey);
 
-        LOG.info("Retrieving project info for " + project.getKey());
+        LOG.info("Retrieving project info for{} " ,project.getKey());
 
         ResourceQuery rq = ResourceQuery.create(project.getKey());
         rq.setDepth(0);
@@ -208,7 +206,6 @@ public class ProjectBuilder extends AbstractBuilder {
 		int size = 1;
 		List<Issue> issuesByLevel = new ArrayList<>();
         for (int i = 1;i<=size; i++) {
-			List<Issue> tempissuesByLevel = new ArrayList<>();
             IssueQuery query = IssueQuery.create();
             query.componentKeys(project.getKey());
 			query.resolved(false);
@@ -217,11 +214,10 @@ public class ProjectBuilder extends AbstractBuilder {
             Issues result = sonar.find(query);
 			int total=result.getPaging().total();
 			size=(int)Math.ceil((double)total/500);
-			LOG.debug("Pagingtotal====== " + result.getPaging().total()+"  "+size);
-			tempissuesByLevel = result.getIssues();
+			List<Issue>  tempissuesByLevel = result.getIssues();
 			issuesByLevel.addAll(tempissuesByLevel);
 		}
-         if (issuesByLevel != null && !issuesByLevel.isEmpty()) {
+         if (!issuesByLevel.isEmpty()) {
             initMostViolatedRulesFromNode(issuesByLevel, issues);
          } else {
             LOG.debug("There is no result on select //resources/resource");

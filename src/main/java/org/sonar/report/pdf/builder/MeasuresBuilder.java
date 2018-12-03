@@ -55,7 +55,7 @@ public class MeasuresBuilder extends AbstractBuilder {
 
     private WSClient sonar;
 
-    private List<String> measuresKeys = null;
+    private transient List<String> measuresKeys = null;
 
     private static final Integer DEFAULT_SPLIT_LIMIT = 20;
 
@@ -130,21 +130,18 @@ public class MeasuresBuilder extends AbstractBuilder {
     private void initMeasuresSplittingRequests(final Measures measures, final String projectKey)
             throws ReportException {
         Iterator<String> it = measuresKeys.iterator();
-        LOG.debug("Getting " + measuresKeys.size() + " metric measures from Sonar by splitting requests");
         List<String> twentyMeasures = new ArrayList<>(20);
         int i = 0;
         while (it.hasNext()) {
             twentyMeasures.add(it.next());
             i++;
             if (i % DEFAULT_SPLIT_LIMIT == 0) {
-                LOG.debug("Split request for: " + twentyMeasures);
                 addMeasures(measures, twentyMeasures, projectKey);
                 i = 0;
                 twentyMeasures.clear();
             }
         }
         if (i != 0) {
-            LOG.debug("Split request for remain metric measures: " + twentyMeasures);
             addMeasures(measures, twentyMeasures, projectKey);
         }
     }
@@ -173,7 +170,8 @@ public class MeasuresBuilder extends AbstractBuilder {
         if (resources != null && resources.size() == 1) {
             this.addAllMeasuresFromDocument(projectKey, measures, resources.get(0));
         } else {
-            LOG.debug("Wrong response when looking for measures: " + measuresAsString.toString());
+        	String e = measuresAsString.toString();
+            LOG.debug("Wrong response when looking for measures: {}", e);
         }
     }
 
