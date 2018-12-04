@@ -165,8 +165,13 @@ public abstract class PDFReporter implements Serializable {
             WSClient sonar = WSClient.create(credentials.getUrl(), credentials.getUsername(),
                     credentials.getPassword()); 
             LOG.info("waiting for Compute Engine task.........");
-            while (true) {            	
-            	
+            while (true) { 
+            	try {
+					Thread.sleep(5000);
+            		} catch (InterruptedException e) {
+            		LOG.info("waiting for Compute Engine task.........",e);
+            		Thread.currentThread().interrupt();
+            		}        	
                 CeTaskQuery ce = CeTaskQuery.create(getProjectKey());
                 ce.setStatus("SUCCESS,FAILED,CANCELED,IN_PROGRESS,PENDING");
                 Tasks tasks = sonar.find(ce);
