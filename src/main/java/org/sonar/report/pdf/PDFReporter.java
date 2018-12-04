@@ -20,6 +20,7 @@
 package org.sonar.report.pdf;
 
 import java.io.ByteArrayOutputStream;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
@@ -32,6 +33,8 @@ import org.sonar.report.pdf.entity.Project;
 import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.Credentials;
 import org.sonarqube.ws.client.WSClient;
+import org.sonarqube.ws.model.Tasks;
+import org.sonarqube.ws.query.CeTaskQuery;
 
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Document;
@@ -160,7 +163,35 @@ public abstract class PDFReporter implements Serializable {
     public Project getProject() throws ReportException {
         if (project == null) {
             WSClient sonar = WSClient.create(credentials.getUrl(), credentials.getUsername(),
-                    credentials.getPassword());
+                    credentials.getPassword()); 
+            LOG.info("waiting for Compute Engine task.........");
+            while (true) {            	
+            	
+                CeTaskQuery ce = CeTaskQuery.create(getProjectKey());
+                ce.setOnlyCurrents(true);
+                Tasks tasks = sonar.find(ce);
+                if (tasks !=null && !tasks.getTasks().isEmpty()) {               	             	
+                	String status = tasks.getTasks().get(0).getstatus();
+                	switch(status.toLowerCase()) {
+                	case "success":
+                		break;
+                		
+                	case "failed":
+                		throw new ReportException("Compute Engine task status is failed.");
+                	
+                	case "canceled":
+                		throw new ReportException("Compute Engine task status is canceled.");
+                		
+                	default :
+                		continue;
+                	}
+                	break;
+                	
+                } else {
+                	throw new ReportException("Can't get Compute Engine task status.");
+                }                         	
+            }
+            
             ProjectBuilder projectBuilder = ProjectBuilder.getInstance(sonar);
             project = projectBuilder.initializeProject(getProjectKey());
         }

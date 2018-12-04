@@ -117,8 +117,7 @@ public class ProjectBuilder extends AbstractBuilder {
     public Project initializeProject(final String projectKey) throws ReportException {
         Project project = new Project(projectKey);
 
-        LOG.info("Retrieving project info for{} " ,project.getKey());
-
+        LOG.info("Retrieving project info for {} " ,project.getKey());
         ResourceQuery rq = ResourceQuery.create(project.getKey());
         rq.setDepth(0);
         List<Resource> resources = sonar.findAll(rq);
