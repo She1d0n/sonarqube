@@ -168,7 +168,7 @@ public abstract class PDFReporter implements Serializable {
             while (true) {            	
             	
                 CeTaskQuery ce = CeTaskQuery.create(getProjectKey());
-                ce.setOnlyCurrents(true);
+                ce.setStatus("SUCCESS,FAILED,CANCELED,IN_PROGRESS,PENDING");
                 Tasks tasks = sonar.find(ce);
                 if (tasks !=null && !tasks.getTasks().isEmpty()) {               	             	
                 	String status = tasks.getTasks().get(0).getstatus();
