@@ -47,5 +47,10 @@ Time表示SonarQube分析多长时间后开始生成报告，默认为1分钟，
 
 ### Download the report
 
-PDF在仪表盘中下载，如果没有下载界面，需要在“配置控件”中添加该控件
+5.x版本：PDF在仪表盘中下载，如果没有下载界面，需要在“配置控件”中添加该控件
+
+6.1-6.2版本：因为UI变化无仪表盘页面，可以在服务器端sonarqube-6.2\web\WEB-INF\pdf-files下载，或者在客户端 .sonar 目录进行下载
+
+
+
 ![PDF Report example](output.jpg?raw=true "PDF Report example")
