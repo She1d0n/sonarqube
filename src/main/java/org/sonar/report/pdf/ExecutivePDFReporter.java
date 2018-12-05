@@ -146,6 +146,7 @@ public class ExecutivePDFReporter extends PDFReporter {
             title.addCell(new Phrase(versionRow, Style.FRONTPAGE_FONT_1));
             title.addCell(new Phrase(descriptionRow, Style.FRONTPAGE_FONT_2));
             String qualityProfile = super.getProject().getMeasure(MetricKeys.PROFILE).getDataValue();
+            if (qualityProfile !=null) {
             JSONParser parser = new JSONParser();
             JSONArray json = (JSONArray) parser.parse(qualityProfile);
             if (!json.isEmpty()) {
@@ -158,6 +159,7 @@ public class ExecutivePDFReporter extends PDFReporter {
 
                 }
 
+            }
             }
             title.addCell(new Phrase(dateRow, Style.FRONTPAGE_FONT_3));
             title.setTotalWidth(pageSize.getWidth() - frontPageDocument.leftMargin() - frontPageDocument.rightMargin());
@@ -263,7 +265,7 @@ public class ExecutivePDFReporter extends PDFReporter {
      * @return The table (iText table) ready to add to the document
      */
     private PdfPTable createCodingRuleViolationsDetails(final Project project) {
-        PdfPTable detailCodingRulesViolationsTable = new PdfPTable(6);
+        PdfPTable detailCodingRulesViolationsTable = new PdfPTable(3);
         Style.noBorderTable(detailCodingRulesViolationsTable);
         detailCodingRulesViolationsTable.setSpacingBefore(10);
 		// total violations
@@ -370,7 +372,7 @@ public class ExecutivePDFReporter extends PDFReporter {
      * @return The paragraph (iText paragraph) ready to add to the document
      */
     private Paragraph createDynamicAnalysis(final Project project) {
-    	if (project.getMeasure(MetricKeys.TESTS).getFormatValue() == "0") {
+    	if (project.getMeasure(MetricKeys.TESTS).getFormatValue() == "N/A" || project.getMeasure(MetricKeys.TESTS).getFormatValue() == "0") {
     		return new Paragraph("");
     	}
         Paragraph dynamicAnalysis = new Paragraph(getTextProperty(PDFResources.GENERAL_DYNAMIC_ANALYSIS),

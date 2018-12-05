@@ -151,7 +151,7 @@ public class Issue implements Model {
         return effort;
     }
 
-    public void setDebt(String debt) {
+    public void setDebt(String effort) {
         this.effort = effort;
     }
 

@@ -116,8 +116,8 @@ public class PDFGenerator {
             baos.writeTo(fos);
             fos.flush();
             fos.close();
-            LOG.info("PDF report generated (see " + sonarProjectId.replace(':', '-')
-                    + ".pdf on build output directory)");
+            String e = sonarProjectId.replace(':', '-');
+            LOG.info("PDF report generated (see {} .pdf on build output directory)",e);
         } catch (ReportException | IOException e) {
             LOG.error("Problem generating PDF file.", e);
         }

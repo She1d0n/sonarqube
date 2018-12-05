@@ -54,9 +54,6 @@ public class PDFPostJob implements PostJob, CheckProject {
     public static final String USERNAME = "sonar.pdf.username";
     public static final String USERNAME_DEFAULT_VALUE = "";
 
-	public static final String WAITING_TIME = "sonar.pdf.time";
-    public static final String TIME_DEFAULT_VALUE = "1";
-
     public static final String SONAR_P_KEY = "sonar.pdf.password";
     public static final String SONAR_P_DEFAULT_VALUE = "";
 
@@ -70,7 +67,7 @@ public class PDFPostJob implements PostJob, CheckProject {
         this.settings = settings;
         this.fs = fs;
     }
-
+    
     /**
      * @see org.sonar.api.batch.CheckProject#shouldExecuteOnProject(org.sonar.api.resources.Project)
      */
@@ -86,18 +83,7 @@ public class PDFPostJob implements PostJob, CheckProject {
     @Override
     public void executeOn(final Project project, final SensorContext context) {
         LOG.info("Executing decorator: PDF Report");
-		String strwaitingtime = settings.hasKey(WAITING_TIME) ? settings.getString(WAITING_TIME)
-                : TIME_DEFAULT_VALUE;
-		LOG.info("waiting for Compute Engine task:"+strwaitingtime+" minutes");
-		try{ 
-			int b=Integer.parseInt(strwaitingtime);
-			int waitingtime=b*60*1000;
-			Thread.sleep(waitingtime);
-		}
-		catch(InterruptedException | NumberFormatException e)
-		{
-		  LOG.error("Problem waiting for Compute Engine task.",e);
-		}
+       
         String sonarHostUrl = settings.hasKey(SONAR_HOST_URL) ? settings.getString(SONAR_HOST_URL)
                 : SONAR_HOST_URL_DEFAULT_VALUE;
         String username = settings.hasKey(USERNAME) ? settings.getString(USERNAME) : USERNAME_DEFAULT_VALUE;
