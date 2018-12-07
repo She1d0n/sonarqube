@@ -1,7 +1,7 @@
 Sonar PDF Report Plugin
 =========================
 
-适用SonarQube版本 : 5.5--5.6.7,6.0--6.6。7.x以上不支持。
+适用SonarQube版本 : 5.5--5.6.7,6.0--6.7.6。7.x以上不支持。
 
 ## Description / Features
 
