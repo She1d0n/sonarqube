@@ -68,28 +68,4 @@ public class MeasureBuilder extends AbstractBuilder {
 
         return measure;
     }
-/**
-    public static Measure initFromNode(final org.sonarqube.ws.model.Measure measureNode) {
-        Measure measure = new Measure();
-        measure.setKey(measureNode.getKey());
-
-        String formatValueNode = measureNode.getFormattedValue();
-        if (formatValueNode != null) {
-            measure.setFormatValue(formatValueNode);
-            measure.setValue(String.valueOf(measureNode.getValue()));
-        }
-
-        Double valueNode = measureNode.getValue();
-
-        if (valueNode != null) {
-            measure.setTextValue(String.valueOf(valueNode));
-        } else {
-            measure.setTextValue("");
-        }
-
-        measure.setDataValue(measureNode.getData());
-
-        return measure;
-    }
-**/
 }

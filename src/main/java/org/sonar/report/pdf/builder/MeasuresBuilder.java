@@ -35,11 +35,11 @@ import org.sonarqube.ws.model.Analyses;
 import org.sonarqube.ws.model.ComponentMeasure;
 
 import org.sonarqube.ws.model.MeasuresComponent;
-import org.sonarqube.ws.model.MeasuresComponentsTree;
+import org.sonarqube.ws.model.MeasuresComponents;
 import org.sonarqube.ws.model.Metric;
 import org.sonarqube.ws.model.Metrics;
 import org.sonarqube.ws.model.Resource;
-import org.sonarqube.ws.query.MeasuresComponentTreeQuery;
+import org.sonarqube.ws.query.MeasuresComponentQuery;
 import org.sonarqube.ws.query.MetricQuery;
 import org.sonarqube.ws.query.ProjectAnalysesQuery;
 import org.sonarqube.ws.query.ResourceQuery;
@@ -168,11 +168,10 @@ public class MeasuresBuilder extends AbstractBuilder {
             throws ReportException {
 
         String[] measuresAsArray = measuresAsString.toArray(new String[measuresAsString.size()]);
-        MeasuresComponentTreeQuery resourceQuery = MeasuresComponentTreeQuery.createForMetrics(projectKey, measuresAsArray);
-        resourceQuery.setQualifiers("TRK,BRC");
-        MeasuresComponentsTree resources = sonar.find(resourceQuery);
+         MeasuresComponentQuery resourceQuery = MeasuresComponentQuery.createForMetrics(projectKey, measuresAsArray);
+        MeasuresComponents resources = sonar.find(resourceQuery);
         if (resources != null ) {
-            this.addAllMeasuresFromDocument(projectKey, measures, resources.getbaseComponent());
+            this.addAllMeasuresFromDocument(projectKey, measures, resources.getMeasuresComponent());
         } else {
         	String e = measuresAsString.toString();
             LOG.debug("Wrong response when looking for measures: {}", e);

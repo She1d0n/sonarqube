@@ -24,9 +24,7 @@ package org.sonarqube.ws.model;
  *
  */
 public class Rule implements Model {
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = 7874511314888199627L;
     String key;
     String name;

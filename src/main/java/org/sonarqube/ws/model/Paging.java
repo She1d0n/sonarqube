@@ -19,20 +19,9 @@
  */
 package org.sonarqube.ws.model;
 
-import java.io.Serializable;
-import java.util.Map;
-
-import org.sonarqube.ws.client.unmarshallers.JsonUtils;
-
-/**
- * Paging model
- *
- */
 public class Paging implements Model {
 
-    /**
-     * 
-     */
+ 
     private static final long serialVersionUID = -2540275275018566305L;
 	private Integer pageIndex;
     private Integer pageSize;

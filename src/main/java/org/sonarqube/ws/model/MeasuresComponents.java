@@ -19,42 +19,16 @@
  */
 package org.sonarqube.ws.model;
 
-import java.util.ArrayList;
-import java.util.List;
+public class MeasuresComponents implements Model {
 
-import com.google.gson.annotations.SerializedName;
+	private static final long serialVersionUID = -5569896106190406543L;
+	private   MeasuresComponent component;
 
-/**
- * Rules model
- *
- */
-public class Rules implements Model {
+	    public  MeasuresComponent getMeasuresComponent() {
+	        return component;
+	    }
 
-
-    private static final long serialVersionUID = -2053999490614642772L;
-    @SerializedName("rules")
-    private final List<Rule> rulesList = new ArrayList<>();
-    private final List<Component> actives = new ArrayList<>();
-    private final List<User> facets = new ArrayList<>();
-    private Paging paging;
-
-    public Paging getPaging() {
-        return paging;
-    }
-
-    public void setPaging(Paging paging) {
-        this.paging = paging;
-    }
-
-    public List<Rule> getRules() {
-        return rulesList;
-    }
-
-    public List<Component> getActives() {
-        return actives;
-    }
-
-    public List<User> getFacets() {
-        return facets;
-    }
+	    public void setMeasuresComponent(MeasuresComponent component) {
+	        this.component = component;
+	    }
 }
