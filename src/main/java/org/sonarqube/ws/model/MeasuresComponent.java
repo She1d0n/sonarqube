@@ -19,17 +19,9 @@ public class MeasuresComponent implements Model {
 		return id;
 	}
 
-	public void setId(@Nullable String id) {
-		this.id = id;
-	}
-	
 	@CheckForNull
 	public String getKey() {
 		return key;
-	}
-
-	public void setKey(@Nullable String key) {
-		this.key = key;
 	}
 	
 	@CheckForNull
@@ -37,28 +29,16 @@ public class MeasuresComponent implements Model {
 		return name;
 	}
 
-	public void setName(@Nullable String name) {
-		this.name = name;
-	}
 	
 	@CheckForNull
 	public String getQualifier() {
 		return qualifier;
 	}
-
-	public void setQualifier(@Nullable String qualifier) {
-		this.qualifier = qualifier;
-	}
 	
-	@CheckForNull
 	public String getDescription() {
 		return description;
 	}
 
-	public void setDescription(@Nullable String description) {
-		this.description = description;
-	}
-	@CheckForNull
 	public List<ComponentMeasure> getMeasures() {
 		return measures;
 	}
@@ -66,4 +46,6 @@ public class MeasuresComponent implements Model {
 	public void setMeasures(@Nullable List<ComponentMeasure> measures) {
 		this.measures = measures;
 	}
+	
+
 }

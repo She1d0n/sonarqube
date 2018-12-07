@@ -146,7 +146,7 @@ public class ExecutivePDFReporter extends PDFReporter {
             title.addCell(new Phrase(versionRow, Style.FRONTPAGE_FONT_1));
             title.addCell(new Phrase(descriptionRow, Style.FRONTPAGE_FONT_2));
             String qualityProfile = super.getProject().getMeasure(MetricKeys.PROFILE).getDataValue();
-            if (qualityProfile !=null) {
+            if (qualityProfile !=null && !qualityProfile.isEmpty()) {
             JSONParser parser = new JSONParser();
             JSONArray json = (JSONArray) parser.parse(qualityProfile);
             if (!json.isEmpty()) {
@@ -158,7 +158,6 @@ public class ExecutivePDFReporter extends PDFReporter {
 					}
 
                 }
-
             }
             }
             title.addCell(new Phrase(dateRow, Style.FRONTPAGE_FONT_3));
@@ -313,9 +312,6 @@ public class ExecutivePDFReporter extends PDFReporter {
         criticalViolationsTendency
                 .addCell(new Phrase(project.getMeasure(measure).getFormatValue(), Style.DASHBOARD_DATA_FONT));
 		criticalViolationsTendency.addCell("");
-
-        criticalViolationsTendency
-                .addCell(getTendencyImage(project.getMeasure(measure).getQualitativeTendency(), false));
 
         criticalViolations.addCell(criticalViolationsTendency);
         return criticalViolations;

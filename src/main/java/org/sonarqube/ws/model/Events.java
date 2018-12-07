@@ -19,40 +19,30 @@
  */
 package org.sonarqube.ws.model;
 
-import java.util.List;
+/**
+ * Component model
+ *
+ */
+public class Events implements Model {
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
+	private static final long serialVersionUID = 5792822771659895497L;
+
+    String key;
+    String name;
+    String category;
 
 
-public class ComponentMeasure implements Model {
+    public String getKey() {
+        return key;
+    }
+    
+    public String getName() {
+        return name;
+    }
 
-	private static final long serialVersionUID = 6791902194269219469L;
-	private String metric;
-	private String value;
-	private List<Period> periods;
-	
-	@CheckForNull
-	public String getMetric() {
-		return metric;
-	}
-	public void setMetric(@Nullable String metric) {
-		this.metric = metric;
-	}
-	
-	@CheckForNull
-	public String getMetricValue() {
-		return value;
-	}
-	public void setValue(@Nullable String value) {
-		this.value = value;
-	}
-	@CheckForNull
-	public List<Period> periods() {
-		return periods;
-	}
-	public void setPeriods(@Nullable List<Period> periods) {
-		this.periods = periods;
-	}
-	
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    
 }

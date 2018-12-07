@@ -19,7 +19,7 @@
  */
 package org.sonar.report.pdf.entity;
 
-import java.text.ParseException;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +46,7 @@ public class Measures implements Entity {
         return (Date) date.clone();
     }
 
-    public void setDate(final Date date) throws ParseException {
+    public void setDate(final Date date) {
         if (date != null) {
             this.date = (Date) date.clone();
         }

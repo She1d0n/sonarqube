@@ -19,40 +19,31 @@
  */
 package org.sonarqube.ws.model;
 
+import java.util.Date;
 import java.util.List;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
+/**
+ * Component model
+ *
+ */
+public class Analyse implements Model {
 
+	private static final long serialVersionUID = 294635042177870654L;
+	private String key;
+	private Date date;
+	private List<Events> events;
+	
 
-public class ComponentMeasure implements Model {
-
-	private static final long serialVersionUID = 6791902194269219469L;
-	private String metric;
-	private String value;
-	private List<Period> periods;
-	
-	@CheckForNull
-	public String getMetric() {
-		return metric;
-	}
-	public void setMetric(@Nullable String metric) {
-		this.metric = metric;
-	}
-	
-	@CheckForNull
-	public String getMetricValue() {
-		return value;
-	}
-	public void setValue(@Nullable String value) {
-		this.value = value;
-	}
-	@CheckForNull
-	public List<Period> periods() {
-		return periods;
-	}
-	public void setPeriods(@Nullable List<Period> periods) {
-		this.periods = periods;
-	}
-	
+    public String getKey() {
+        return key;
+    }
+    
+    public Date getDate() {
+        return (Date) date.clone();
+    }
+    
+    public List<Events> getevents() {
+        return  events;
+    }
+   
 }

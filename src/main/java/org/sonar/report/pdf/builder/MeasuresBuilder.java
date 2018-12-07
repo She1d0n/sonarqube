@@ -19,7 +19,6 @@
  */
 package org.sonar.report.pdf.builder;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -30,13 +29,18 @@ import org.slf4j.LoggerFactory;
 import org.sonar.report.pdf.entity.Measure;
 import org.sonar.report.pdf.entity.Measures;
 import org.sonar.report.pdf.entity.exception.ReportException;
-import org.sonar.report.pdf.util.MetricKeys;
 import org.sonarqube.ws.client.WSClient;
+import org.sonarqube.ws.model.Analyses;
+import org.sonarqube.ws.model.ComponentMeasure;
+
+import org.sonarqube.ws.model.MeasuresComponent;
+import org.sonarqube.ws.model.MeasuresComponentsTree;
 import org.sonarqube.ws.model.Metric;
 import org.sonarqube.ws.model.Metrics;
-import org.sonarqube.ws.model.Resource;
+
+import org.sonarqube.ws.query.MeasuresComponentTreeQuery;
 import org.sonarqube.ws.query.MetricQuery;
-import org.sonarqube.ws.query.ResourceQuery;
+import org.sonarqube.ws.query.ProjectAnalysesQuery;
 
 /**
  * Builder for a set of measures
@@ -162,13 +166,11 @@ public class MeasuresBuilder extends AbstractBuilder {
             throws ReportException {
 
         String[] measuresAsArray = measuresAsString.toArray(new String[measuresAsString.size()]);
-        ResourceQuery query = ResourceQuery.createForMetrics(projectKey, measuresAsArray);
-        query.setDepth(0);
-        query.setIncludeTrends(true);
-        List<Resource> resources = sonar.findAll(query);
-
-        if (resources != null && resources.size() == 1) {
-            this.addAllMeasuresFromDocument(projectKey, measures, resources.get(0));
+        MeasuresComponentTreeQuery resourceQuery = MeasuresComponentTreeQuery.createForMetrics(projectKey, measuresAsArray);
+        resourceQuery.setQualifiers("TRK,BRC");
+        MeasuresComponentsTree resources = sonar.find(resourceQuery);
+        if (resources != null ) {
+            this.addAllMeasuresFromDocument(projectKey, measures, resources.getbaseComponent());
         } else {
         	String e = measuresAsString.toString();
             LOG.debug("Wrong response when looking for measures: {}", e);
@@ -182,35 +184,40 @@ public class MeasuresBuilder extends AbstractBuilder {
      *            projectKey
      * @param measures
      *            measures
-     * @param resource
+     * @param measuresComponent
      *            resource
      * @throws ReportException
      *             ReportException
      */
-    private void addAllMeasuresFromDocument(final String projectKey, final Measures measures, final Resource resource)
+    
+    private void addAllMeasuresFromDocument(final String projectKey, final Measures measures, final MeasuresComponent measuresComponent)
             throws ReportException {
 
-        List<org.sonarqube.ws.model.Measure> allNodes = resource.getMsr();
-        Iterator<org.sonarqube.ws.model.Measure> it = allNodes.iterator();
+        List<ComponentMeasure> allNodes = measuresComponent.getMeasures();
+        Iterator<ComponentMeasure> it = allNodes.iterator();
         while (it.hasNext()) {
-            addMeasureFromNode(projectKey, measures, it.next());
+            addMeasureFromNode(measures, it.next());
         }
         try {
-
-            Date dateNode = resource.getDate();
+        	ProjectAnalysesQuery aq = ProjectAnalysesQuery.create(projectKey);
+        	aq.setcategory("VERSION");
+        	aq.setps(1);
+        	Analyses analyses = sonar.find(aq);       	
+            Date dateNode = analyses.getAnalyses().get(0).getDate();
             if (dateNode != null) {
                 measures.setDate(dateNode);
             }
-
-            String versionNode = resource.getVersion();
+            String versionNode = analyses.getAnalyses().get(0).getevents().get(0).getName();
             if (versionNode != null) {
                 measures.setVersion(versionNode);
             }
-        } catch (ParseException e) {
-            LOG.error("Can not parse date", e);
+        } catch (Exception e) {
+        	measures.setVersion("1.0");
+        	Date dt = new Date();  
+        	measures.setDate(dt);
         }
     }
-
+    
     /**
      * Add a measure from a node
      * 
@@ -218,22 +225,15 @@ public class MeasuresBuilder extends AbstractBuilder {
      *            projectKey
      * @param measures
      *            measures
-     * @param measureNode
+     * @param componentMeasure
      *            measureNode
      * @throws ReportException
      *             ReportException
      */
-    private void addMeasureFromNode(final String projectKey, final Measures measures,
-            final org.sonarqube.ws.model.Measure measureNode) throws ReportException {
-        Measure measure = MeasureBuilder.initFromNode(measureNode);
-        if (MetricKeys.isMetricNeeded(measure.getKey())) {
-            Integer trendNode = HistoryBuilder.getInstance(sonar, projectKey).computeTrend(measureNode);
-            if (trendNode != null) {
-                measure.setQualitativeTendency(trendNode);
-            } else {
-                measure.setQualitativeTendency(0);
-            }
-        }
+    
+    private void addMeasureFromNode(final Measures measures,
+            final ComponentMeasure componentMeasure) throws ReportException {
+        Measure measure = MeasureBuilder.initFromNode(componentMeasure);
         measures.addMeasure(measure.getKey(), measure);
     }
 

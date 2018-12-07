@@ -47,13 +47,16 @@ import org.sonar.report.pdf.entity.Violation;
 import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.MetricKeys;
 import org.sonarqube.ws.client.WSClient;
+import org.sonarqube.ws.model.Components;
+import org.sonarqube.ws.model.ComponentsTree;
 import org.sonarqube.ws.model.Issue;
 import org.sonarqube.ws.model.Issues;
-import org.sonarqube.ws.model.Resource;
+import org.sonarqube.ws.model.MeasuresComponent;
+import org.sonarqube.ws.model.MeasuresComponentsTree;
+import org.sonarqube.ws.query.ComponentsQuery;
 import org.sonarqube.ws.query.IssueQuery;
-import org.sonarqube.ws.query.ResourceQuery;
+import org.sonarqube.ws.query.MeasuresComponentTreeQuery;
 import org.sonarqube.ws.query.RuleQuery;
-
 /**
  * Builder for the whole project
  *
@@ -72,6 +75,7 @@ public class ProjectBuilder extends AbstractBuilder {
     private WSClient sonar;
 
     private Integer tableLimit;
+    private static final String  S="metric";
 
     /**
      * Default constructor
@@ -114,38 +118,36 @@ public class ProjectBuilder extends AbstractBuilder {
      * @throws ReportException
      *             ReportException
      */
+    
     public Project initializeProject(final String projectKey) throws ReportException {
         Project project = new Project(projectKey);
 
         LOG.info("Retrieving project info for {} " ,project.getKey());
-        ResourceQuery rq = ResourceQuery.create(project.getKey());
-        rq.setDepth(0);
-        List<Resource> resources = sonar.findAll(rq);
+        ComponentsQuery rq = ComponentsQuery.create(project.getKey());
+        rq.setstrategy("children");
+        rq.setqualifiers("BRC");
+        ComponentsTree resources = sonar.find(rq);
 
-        if (resources != null && !resources.isEmpty()) {
-            initFromNode(project, resources.get(0));
+        if (resources != null) {
+            initFromNode(project, resources);
             initMeasures(project);
             initMostViolatedRules(project);
             initMostViolatedFiles(project);
             initMostComplexElements(project);
             initMostDuplicatedFiles(project);
+            
             LOG.debug("Accessing Sonar: getting child projects");
 
-            ResourceQuery resourceQueryChild = ResourceQuery.create(project.getKey());
-            resourceQueryChild.setDepth(1);
-            resourceQueryChild.setQualifiers("BRC","PRJ");
-            List<Resource> childNodes = sonar.findAll(resourceQueryChild);
+            List<Components> childNodes = resources.getComponents();
 
-            Iterator<Resource> it = childNodes.iterator();
+            Iterator<Components> it = childNodes.iterator();
             project.setSubprojects(new ArrayList<Project>(0));
             if (!it.hasNext()) {
                 LOG.debug(project.getKey() + " project has no childs");
             }
             while (it.hasNext()) {
-                Resource childNode = it.next();
-
-                String scope = childNode.getScope();
-                if (PDFResources.PROJECT_SCOPE.equals(scope) && !projectKey.equals(childNode.getKey())) {
+            	Components childNode = it.next();
+                if (!projectKey.equals(childNode.getKey())) {
                     Project childProject = initializeProject(childNode.getKey());
                     project.getSubprojects().add(childProject);
                 }
@@ -163,19 +165,20 @@ public class ProjectBuilder extends AbstractBuilder {
      * 
      * @param project
      *            project
-     * @param resourceNode
+     * @param resources
      *            resourceNode
      */
-    private void initFromNode(Project project, final Resource resourceNode) {
-        project.setName(resourceNode.getName());
-        project.setDescription(resourceNode.getDescription());
+    
+    private void initFromNode(Project project, final ComponentsTree resources) {
+        project.setName(resources.getBaseComponent().getName());
+        project.setDescription(resources.getBaseComponent().getDescription());
         project.setSubprojects(new LinkedList<Project>());
         project.setMostViolatedRules(new LinkedList<Rule>());
         project.setMostComplexFiles(new LinkedList<FileInfo>());
         project.setMostDuplicatedFiles(new LinkedList<FileInfo>());
         project.setMostViolatedFiles(new LinkedList<FileInfo>());
     }
-
+  
     /**
      * Initialize measures
      * 
@@ -190,14 +193,14 @@ public class ProjectBuilder extends AbstractBuilder {
         Measures measures = measuresBuilder.initMeasuresByProjectKey(project.getKey());
         project.setMeasures(measures);
     }
+  
     
     
 
     private void initMostViolatedRules(final Project project) throws ReportException {
         LOG.info("    Retrieving most violated rules");
         LOG.debug("Accessing Sonar: getting most violated rules");
-
-
+        
         Map<String, IssueBean> issues = new HashMap<>();
         ValueComparator bvc = new ValueComparator(issues);
         TreeMap<String, IssueBean> sortedMap = new TreeMap<>(bvc);
@@ -283,12 +286,15 @@ public class ProjectBuilder extends AbstractBuilder {
         LOG.info("    Retrieving most violated files");
         LOG.debug("Accessing Sonar: getting most violated files");
 
-        ResourceQuery resourceQuery = ResourceQuery.createForMetrics(project.getKey(), MetricKeys.VIOLATIONS);
-        resourceQuery.setScopes(PDFResources.FILE_SCOPE);
-        resourceQuery.setDepth(-1);
-        resourceQuery.setLimit(tableLimit);
-        List<Resource> resources = sonar.findAll(resourceQuery);
-        List<FileInfo> fileInfoList = FileInfoBuilder.initFromDocument(resources, FileInfoTypes.VIOLATIONS_CONTENT);
+        MeasuresComponentTreeQuery resourceQuery = MeasuresComponentTreeQuery.createForMetrics(project.getKey(), MetricKeys.VIOLATIONS);
+        resourceQuery.setQualifiers("FIL");
+        resourceQuery.setMetricSort(MetricKeys.VIOLATIONS);
+        resourceQuery.setS(S);        
+        resourceQuery.setAsc(false);
+        resourceQuery.setPs(tableLimit);
+        MeasuresComponentsTree resources = sonar.find(resourceQuery);
+        List<MeasuresComponent> filecomponents =resources.getComponents();
+        List<FileInfo> fileInfoList = FileInfoBuilder.initFromDocument(filecomponents, FileInfoTypes.VIOLATIONS_CONTENT);
         project.setMostViolatedFiles(fileInfoList);
 
     }
@@ -304,13 +310,17 @@ public class ProjectBuilder extends AbstractBuilder {
     private void initMostComplexElements(final Project project) throws ReportException {
         LOG.info("    Retrieving most complex elements");
         LOG.debug("Accessing Sonar: getting most complex elements");
-
-        ResourceQuery resourceQuery = ResourceQuery.createForMetrics(project.getKey(), MetricKeys.COMPLEXITY);
-        resourceQuery.setScopes(PDFResources.FILE_SCOPE);
-        resourceQuery.setDepth(-1);
-        resourceQuery.setLimit(tableLimit);
-        List<Resource> resources = sonar.findAll(resourceQuery);
-        project.setMostComplexFiles(FileInfoBuilder.initFromDocument(resources, FileInfoTypes.CCN_CONTENT));
+        
+        MeasuresComponentTreeQuery resourceQuery = MeasuresComponentTreeQuery.createForMetrics(project.getKey(), MetricKeys.COMPLEXITY);
+        resourceQuery.setQualifiers("FIL");
+        resourceQuery.setMetricSort(MetricKeys.COMPLEXITY);
+        resourceQuery.setS(S);        
+        resourceQuery.setAsc(false);
+        resourceQuery.setPs(tableLimit);
+        MeasuresComponentsTree resources = sonar.find(resourceQuery);
+        List<MeasuresComponent> filecomponents =resources.getComponents();
+        List<FileInfo> fileInfoList = FileInfoBuilder.initFromDocument(filecomponents, FileInfoTypes.CCN_CONTENT);
+        project.setMostComplexFiles(fileInfoList);
     }
 
     /**
@@ -324,13 +334,16 @@ public class ProjectBuilder extends AbstractBuilder {
     private void initMostDuplicatedFiles(final Project project) throws ReportException {
         LOG.info("    Retrieving most duplicated files");
         LOG.debug("Accessing Sonar: getting most duplicated files");
-
-        ResourceQuery resourceQuery = ResourceQuery.createForMetrics(project.getKey(), MetricKeys.DUPLICATED_LINES);
-        resourceQuery.setScopes(PDFResources.FILE_SCOPE);
-        resourceQuery.setDepth(-1);
-        resourceQuery.setLimit(tableLimit);
-        List<Resource> resources = sonar.findAll(resourceQuery);
-        project.setMostDuplicatedFiles(FileInfoBuilder.initFromDocument(resources, FileInfoTypes.DUPLICATIONS_CONTENT));
+        MeasuresComponentTreeQuery resourceQuery = MeasuresComponentTreeQuery.createForMetrics(project.getKey(), MetricKeys.DUPLICATED_LINES);
+        resourceQuery.setQualifiers("FIL");
+        resourceQuery.setMetricSort(MetricKeys.DUPLICATED_LINES);
+        resourceQuery.setS(S);        
+        resourceQuery.setAsc(false);
+        resourceQuery.setPs(tableLimit);
+        MeasuresComponentsTree resources = sonar.find(resourceQuery);
+        List<MeasuresComponent> filecomponents =resources.getComponents();
+        List<FileInfo> fileInfoList = FileInfoBuilder.initFromDocument(filecomponents, FileInfoTypes.DUPLICATIONS_CONTENT);
+        project.setMostDuplicatedFiles(fileInfoList);
     }
 
     /**

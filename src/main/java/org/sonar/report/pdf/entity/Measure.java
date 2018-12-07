@@ -32,15 +32,11 @@ public class Measure implements Entity {
     private String key;
     private String value;
     private String formatValue;
-    private String textValue;
     private String dataValue;
-    private Integer qualitativeTendency;
-    private String alert;
 
     public Measure(final String measureKey, final String measureFValue) {
         this.key = measureKey;
         this.formatValue = measureFValue;
-        this.qualitativeTendency = 0;
     }
 
     public Measure() {
@@ -71,13 +67,7 @@ public class Measure implements Entity {
         this.formatValue = formatValue;
     }
 
-    public String getTextValue() {
-        return textValue;
-    }
-
-    public void setTextValue(final String textValue) {
-        this.textValue = textValue;
-    }
+   
 
     public String getDataValue() {
         return dataValue;
@@ -85,22 +75,6 @@ public class Measure implements Entity {
 
     public void setDataValue(final String dataValue) {
         this.dataValue = dataValue;
-    }
-
-    public Integer getQualitativeTendency() {
-        return qualitativeTendency;
-    }
-
-    public void setQualitativeTendency(final Integer qualitativeTendency) {
-        this.qualitativeTendency = qualitativeTendency;
-    }
-
-    public String getAlert() {
-        return alert;
-    }
-
-    public void setAlert(final String alert) {
-        this.alert = alert;
     }
 
 }

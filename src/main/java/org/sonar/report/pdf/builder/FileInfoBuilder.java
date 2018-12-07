@@ -24,8 +24,7 @@ import java.util.List;
 
 import org.sonar.report.pdf.entity.FileInfo;
 import org.sonar.report.pdf.entity.FileInfoTypes;
-import org.sonar.report.pdf.util.MetricKeys;
-import org.sonarqube.ws.model.Resource;
+import org.sonarqube.ws.model.MeasuresComponent;
 
 /**
  * Builder for file information
@@ -45,12 +44,27 @@ public class FileInfoBuilder extends AbstractBuilder {
     /**
      * Initialization of File Information from resources
      * 
-     * @param resources
+     * @param filecomponents
      *            resources
      * @param type
      *            FileInfoTypes
      * @return
      */
+    public static List<FileInfo> initFromDocument(final List<MeasuresComponent> filecomponents, final FileInfoTypes type) {
+        List<FileInfo> fileInfoList = new LinkedList<>();
+        if (filecomponents != null) {
+            for (MeasuresComponent fileNode : filecomponents) {
+                FileInfo fileInfo = new FileInfo();
+                initFromNode(fileInfo, fileNode, type);
+                if (fileInfo.isContentSet(type)) {
+                    fileInfoList.add(fileInfo);
+                }
+
+            }
+        }
+        return fileInfoList;
+    }
+    /**
     public static List<FileInfo> initFromDocument(final List<Resource> resources, final FileInfoTypes type) {
         List<FileInfo> fileInfoList = new LinkedList<>();
         if (resources != null) {
@@ -65,6 +79,7 @@ public class FileInfoBuilder extends AbstractBuilder {
         }
         return fileInfoList;
     }
+    **/
 
     /**
      * A FileInfo object could contain information about violations, ccn or
@@ -76,16 +91,16 @@ public class FileInfoBuilder extends AbstractBuilder {
      * @param type
      *            Type of content
      */
-    public static void initFromNode(final FileInfo fileInfo, final Resource fileNode, final FileInfoTypes type) {
+    public static void initFromNode(final FileInfo fileInfo, final MeasuresComponent fileNode, final FileInfoTypes type) {
         fileInfo.setKey(fileNode.getKey());
         fileInfo.setName(fileNode.getName());
 
         if (type == FileInfoTypes.VIOLATIONS_CONTENT) {
-            fileInfo.setViolations(fileNode.getMeasure(MetricKeys.VIOLATIONS).getFormattedValue());
+            fileInfo.setViolations(fileNode.getMeasures().get(0).getMetricValue());
         } else if (type == FileInfoTypes.CCN_CONTENT) {
-            fileInfo.setComplexity(fileNode.getMeasure(MetricKeys.COMPLEXITY).getFormattedValue());
+            fileInfo.setComplexity(fileNode.getMeasures().get(0).getMetricValue());
         } else if (type == FileInfoTypes.DUPLICATIONS_CONTENT) {
-            fileInfo.setDuplicatedLines(fileNode.getMeasure(MetricKeys.DUPLICATED_LINES).getFormattedValue());
+            fileInfo.setDuplicatedLines(fileNode.getMeasures().get(0).getMetricValue());
         }
     }
 

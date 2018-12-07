@@ -20,6 +20,7 @@
 package org.sonar.report.pdf.builder;
 
 import org.sonar.report.pdf.entity.Measure;
+import org.sonarqube.ws.model.ComponentMeasure;
 
 /**
  * Builder for a measure
@@ -39,9 +40,35 @@ public class MeasureBuilder extends AbstractBuilder {
     /**
      * Init measure from XML node. The root node must be "msr".
      * 
-     * @param measureNode
+     * @param componentMeasure
      * @return
      */
+    public static Measure initFromNode(final ComponentMeasure componentMeasure) {
+        Measure measure = new Measure();
+        String metricvalue = componentMeasure.getMetricValue();
+        String metricname = componentMeasure.getMetric();
+            
+        if (metricvalue != null && metricname !=null) {
+        	 measure.setKey(metricname);
+             measure.setValue(String.valueOf(metricvalue));
+             measure.setDataValue(metricvalue);
+        	if (metricname.equalsIgnoreCase("reliability_remediation_effort") || metricname.equalsIgnoreCase("security_remediation_effort") || metricname.equalsIgnoreCase("sqale_index")) {
+        		int time= Integer.parseInt(metricvalue);
+        		int hours = time / 60;
+        		int minute = time % 60;
+        		if (hours == 0) {
+        			measure.setFormatValue(minute + "min");
+        		}else {
+        			measure.setFormatValue(hours + "h" + minute + "min");
+        		}
+        	}else {
+        		 measure.setFormatValue(metricvalue);
+        	}
+        }
+
+        return measure;
+    }
+/**
     public static Measure initFromNode(final org.sonarqube.ws.model.Measure measureNode) {
         Measure measure = new Measure();
         measure.setKey(measureNode.getKey());
@@ -64,5 +91,5 @@ public class MeasureBuilder extends AbstractBuilder {
 
         return measure;
     }
-
+**/
 }
