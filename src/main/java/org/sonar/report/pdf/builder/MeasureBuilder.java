@@ -53,14 +53,7 @@ public class MeasureBuilder extends AbstractBuilder {
              measure.setValue(String.valueOf(metricvalue));
              measure.setDataValue(metricvalue);
         	if (metricname.equalsIgnoreCase("reliability_remediation_effort") || metricname.equalsIgnoreCase("security_remediation_effort") || metricname.equalsIgnoreCase("sqale_index")) {
-        		int time= Integer.parseInt(metricvalue);
-        		int hours = time / 60;
-        		int minute = time % 60;
-        		if (hours == 0) {
-        			measure.setFormatValue(minute + "min");
-        		}else {
-        			measure.setFormatValue(hours + "h" + minute + "min");
-        		}
+        		measure.setFormatValue(effortTimeConvert(metricvalue));
         	}else {
         		 measure.setFormatValue(metricvalue);
         	}
@@ -68,4 +61,30 @@ public class MeasureBuilder extends AbstractBuilder {
 
         return measure;
     }
+
+	
+	private static String effortTimeConvert(String metricvalue) {
+		String result=metricvalue;
+		int time= Integer.parseInt(metricvalue);
+		int days=time / (60 * 24);
+		time = time % (60 * 24);
+		int hours = time /60 ;
+		int minute = time % 60;
+		
+		if (days >0 && hours==0 && minute==0) {
+			result = days +"d";
+		}
+		if (days >0 && (hours> 0 || minute >0)) {
+			result = days +"d" + hours + "h" + minute + "min";
+		}
+		
+		if (days==0 && hours > 0) {
+			result = hours + "h" + minute + "min";
+		}
+		
+		if (days==0 && hours == 0) {
+			result = minute + "min";
+		}
+		return result;
+	}
 }
