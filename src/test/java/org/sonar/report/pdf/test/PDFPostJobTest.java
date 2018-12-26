@@ -78,7 +78,6 @@ public class PDFPostJobTest {
 	@Test(groups = { "post-job" })
 	public void shouldExecuteIfNoSkipParameter() {
 		when(settings.hasKey(PDFPostJob.SKIP_PDF_KEY)).thenReturn(Boolean.FALSE);
-		System.out.println("22222222222"+pdfPostJob.shouldExecuteOnProject());
 		assertTrue(pdfPostJob.shouldExecuteOnProject());
 	}
 }
