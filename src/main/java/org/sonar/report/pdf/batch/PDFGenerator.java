@@ -32,7 +32,7 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.fs.FileSystem;
-import org.sonar.api.resources.Project;
+
 import org.sonar.report.pdf.ExecutivePDFReporter;
 import org.sonar.report.pdf.PDFReporter;
 import org.sonar.report.pdf.PDFResources;
@@ -55,12 +55,12 @@ public class PDFGenerator {
     private String password;
     private String reportType;
 
-    private Project project;
+    private String project;
     private FileSystem fs;
 
-    public PDFGenerator(final Project project, final FileSystem fs, final String sonarHostUrl, final String username,
+    public PDFGenerator(final String projectkey, final FileSystem fs, final String sonarHostUrl, final String username,
             final String password, final String reportType) {
-        this.project = project;
+        this.project = projectkey;
         this.fs = fs;
         this.sonarHostUrl = sonarHostUrl;
         this.username = username;
@@ -98,7 +98,7 @@ public class PDFGenerator {
             Credentials credentials = new Credentials(config.getProperty(PDFResources.SONAR_BASE_URL), username,
                     password);
 
-            String sonarProjectId = project.getEffectiveKey();
+            String sonarProjectId = project;
             String path = fs.workDir().getAbsolutePath() + "/" + sonarProjectId.replace(':', '-') + ".pdf";
 
             PDFReporter reporter = null;

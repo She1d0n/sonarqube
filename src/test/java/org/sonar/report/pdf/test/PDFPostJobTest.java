@@ -44,26 +44,24 @@ import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 
 import java.io.File;
+import java.util.Optional;
 
 import org.sonar.api.batch.fs.internal.DefaultFileSystem;
-import org.sonar.api.config.Settings;
-import org.sonar.api.resources.Project;
+import org.sonar.api.config.Configuration;
+
 import org.sonar.report.pdf.batch.PDFPostJob;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
-@SuppressWarnings("deprecation")
 public class PDFPostJobTest {
 
-	private Project project;
-	private Settings settings;
+	private Configuration settings;
 	private DefaultFileSystem fs;
 	private PDFPostJob pdfPostJob;
 
 	@BeforeGroups(groups = { "post-job" })
 	public void before() {
-		project = mock(Project.class);
-		settings = mock(Settings.class);
+		settings = mock(Configuration.class);
 		File tempDir = new File(System.getProperty("java.io.tmpdir"));
 		fs = new DefaultFileSystem(tempDir);
 		pdfPostJob = new PDFPostJob(settings, fs);
@@ -71,16 +69,16 @@ public class PDFPostJobTest {
 
 	@Test(groups = { "post-job" })
 	public void doNotExecuteIfSkipParameter() {
+		Optional<Boolean> opt =Optional.ofNullable(Boolean.TRUE);
 		when(settings.hasKey(PDFPostJob.SKIP_PDF_KEY)).thenReturn(Boolean.TRUE);
-		when(settings.getBoolean(PDFPostJob.SKIP_PDF_KEY)).thenReturn(Boolean.TRUE);
-
-		assertFalse(pdfPostJob.shouldExecuteOnProject(project));
+		when(settings.getBoolean(PDFPostJob.SKIP_PDF_KEY)).thenReturn(opt);
+		assertFalse(pdfPostJob.shouldExecuteOnProject());
 	}
 
 	@Test(groups = { "post-job" })
 	public void shouldExecuteIfNoSkipParameter() {
 		when(settings.hasKey(PDFPostJob.SKIP_PDF_KEY)).thenReturn(Boolean.FALSE);
-
-		assertTrue(pdfPostJob.shouldExecuteOnProject(project));
+		System.out.println("22222222222"+pdfPostJob.shouldExecuteOnProject());
+		assertTrue(pdfPostJob.shouldExecuteOnProject());
 	}
 }

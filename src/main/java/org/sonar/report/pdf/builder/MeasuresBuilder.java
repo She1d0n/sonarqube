@@ -19,6 +19,7 @@
  */
 package org.sonar.report.pdf.builder;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -36,13 +37,11 @@ import org.sonarqube.ws.model.ComponentMeasure;
 
 import org.sonarqube.ws.model.MeasuresComponent;
 import org.sonarqube.ws.model.MeasuresComponents;
-import org.sonarqube.ws.model.Metric;
-import org.sonarqube.ws.model.Metrics;
 import org.sonarqube.ws.model.Resource;
 import org.sonarqube.ws.query.MeasuresComponentQuery;
-import org.sonarqube.ws.query.MetricQuery;
 import org.sonarqube.ws.query.ProjectAnalysesQuery;
 import org.sonarqube.ws.query.ResourceQuery;
+
 
 /**
  * Builder for a set of measures
@@ -77,12 +76,33 @@ public class MeasuresBuilder extends AbstractBuilder {
     }
 
     /**
-     * Get the metric keys
+     * Get the metric keys from MetricKeys
      * 
      * @return List of Keys
      * @throws ReportException
      *             ReportException
      */
+    
+    public List<String> getAllMetricKeys() throws ReportException {
+    	Field[] fields = MetricKeys.class.getFields();
+		List<String> allMetricKeys = new ArrayList<>();
+    	for (int i = 0; i < fields.length; i++) {
+			String metricKey;
+			try {
+				metricKey = ((MetricKeys) fields[i].get(MetricKeys.class)).getKey();
+		        allMetricKeys.add(metricKey);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				 LOG.error( "Problem getting the metric keys .", e);
+				 throw new ReportException("Problem getting the metric keys .");
+			} 
+		}
+    	 return allMetricKeys;
+
+       
+
+    }
+    
+  /**
     public List<String> getAllMetricKeys() throws ReportException {
 
         MetricQuery query = MetricQuery.all();
@@ -95,7 +115,7 @@ public class MeasuresBuilder extends AbstractBuilder {
         }
         return allMetricKeys;
     }
-
+**/
     /**
      * Initialization of measures of a project
      * 
@@ -168,7 +188,7 @@ public class MeasuresBuilder extends AbstractBuilder {
             throws ReportException {
 
         String[] measuresAsArray = measuresAsString.toArray(new String[measuresAsString.size()]);
-         MeasuresComponentQuery resourceQuery = MeasuresComponentQuery.createForMetrics(projectKey, measuresAsArray);
+        MeasuresComponentQuery resourceQuery = MeasuresComponentQuery.createForMetrics(projectKey, measuresAsArray);
         MeasuresComponents resources = sonar.find(resourceQuery);
         if (resources != null ) {
             this.addAllMeasuresFromDocument(projectKey, measures, resources.getMeasuresComponent());
@@ -250,7 +270,7 @@ public class MeasuresBuilder extends AbstractBuilder {
      */
     
     private void addMeasureFromNode(final Measures measures,
-            final ComponentMeasure componentMeasure) throws ReportException {
+            final ComponentMeasure componentMeasure) {
         Measure measure = MeasureBuilder.initFromNode(componentMeasure);
         measures.addMeasure(measure.getKey(), measure);
     }

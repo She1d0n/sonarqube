@@ -34,8 +34,6 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sonarqube.ws.client.SonarHost;
 import org.sonarqube.ws.client.services.AbstractQuery;
 import org.sonarqube.ws.client.services.Query;
@@ -45,7 +43,6 @@ import org.sonarqube.ws.client.services.Query;
  *
  */
 public class HttpClient3Connector implements Connector {
-    private static final Logger LOG = LoggerFactory.getLogger(HttpClient3Connector.class);
     /**
      * 
      */
@@ -139,7 +136,6 @@ public class HttpClient3Connector implements Connector {
 
         try (InputStream inputStream = method.getResponseBodyAsStream();
                 BufferedReader reader = new BufferedReader(
-                        //new InputStreamReader(inputStream, Charset.defaultCharset()));) {
 						new InputStreamReader(inputStream, "UTF-8"));) {
 
             final StringBuilder sb = new StringBuilder();

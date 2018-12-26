@@ -67,7 +67,7 @@ public class FileUploader {
             if (status == HttpStatus.SC_OK) {
                 LOG.info("PDF uploaded.");
             } else {
-                LOG.error("Something went wrong storing the PDF at server side. Status: " + status);
+                LOG.error("Something went wrong storing the PDF at server side. Status: {}",status);
             }
         } catch (Exception e) {
             LOG.error("Something went wrong storing the PDF at server side", e);
