@@ -42,10 +42,7 @@ public class PDFReportPlugin implements Plugin {
    
 	@Override
 	public void define(Context context) {
-		context.addExtensions(PDFPostJob.class, PdfReportWidget.class);
-    }
-
-
-		
+		context.addExtensions(PDFPostJob.class, PdfReportWidget.class,PDFReportPageDefinition.class,PDFWebservice.class);
+    }		
 	}
 

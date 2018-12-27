@@ -30,7 +30,6 @@
 	
 	<properties>
 		<sonar.pluginName>PDF Report</sonar.pluginName>
-		<sonar.pluginClass>org.sonar.report.pdf.plugin.PDFReportPlugin</sonar.pluginClass>
 		<sonar.version>7.0</sonar.version>
 		<!-- dependencies versions -->
 		<itext.version>2.1.4</itext.version>
@@ -48,7 +47,7 @@
 		<mockito.version>2.13.0</mockito.version>
 		<!-- plugins versions -->
 		<sonar-plugin.version>3.0.2</sonar-plugin.version>
-		<sonar-packaging-maven-plugin.version>1.15</sonar-packaging-maven-plugin.version>
+		<sonar-packaging-maven-plugin.version>1.18.0.372</sonar-packaging-maven-plugin.version>
 		<sonar.binaries>${project.build.outputDirectory}</sonar.binaries>
 	</properties>
 
@@ -178,8 +177,13 @@
 				</plugin>
 				<plugin>
 					<groupId>org.sonarsource.sonar-packaging-maven-plugin</groupId>
-					<artifactId>sonar-packaging-maven-plugin</artifactId>
+					<artifactId>sonar-packaging-maven-plugin</artifactId>						
 					<version>${sonar-packaging-maven-plugin.version}</version>
+					<extensions>true</extensions>
+        			<configuration>
+          				<pluginKey>pdfreport</pluginKey>
+          				<pluginClass>org.sonar.report.pdf.plugin.PDFReportPlugin</pluginClass>
+       				 </configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>

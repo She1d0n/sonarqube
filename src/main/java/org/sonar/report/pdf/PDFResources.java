@@ -159,7 +159,7 @@ public final class PDFResources implements Serializable {
 
     public static final String SONAR_TABLE_LIMIT = "sonar.table.limit";
 
-    public static final String PDF_REPORT_STORE_PATH = "/pdf_report/store";
+    public static final String PDF_REPORT_STORE_PATH = "/api/pdfreport/store";
 
     private PDFResources() {
         super();

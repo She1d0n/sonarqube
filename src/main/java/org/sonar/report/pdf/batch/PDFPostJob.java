@@ -22,6 +22,7 @@ package org.sonar.report.pdf.batch;
 
 
 import org.slf4j.Logger;
+import java.io.File;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.ExtensionPoint;
 import org.sonar.api.batch.postjob.PostJob;
@@ -30,6 +31,7 @@ import org.sonar.api.batch.postjob.PostJobDescriptor;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.config.Configuration;
 import org.sonar.report.pdf.PDFResources;
+import org.sonar.report.pdf.util.FileUploader;
 
 /**
  * Extension point for PDF Job
@@ -38,7 +40,7 @@ import org.sonar.report.pdf.PDFResources;
 @ExtensionPoint
 public class PDFPostJob implements PostJob {
 
-
+	private static final String PDF_EXTENSION = ".pdf";
     private static final Logger LOG = LoggerFactory.getLogger(PDFPostJob.class);
     public static final String PROJECT_KEY = "sonar.projectKey";
     public static final String PROJECT_NAME = "sonar.projectName";
@@ -96,15 +98,20 @@ public class PDFPostJob implements PostJob {
 	      String password = settings.hasKey(SONAR_P_KEY) ? settings.get(SONAR_P_KEY).orElse(SONAR_P_DEFAULT_VALUE) : SONAR_P_DEFAULT_VALUE;
 	      String reportType = settings.hasKey(REPORT_TYPE) ? settings.get(REPORT_TYPE).orElse(REPORT_TYPE_DEFAULT_VALUE) : REPORT_TYPE_DEFAULT_VALUE;
 	      String projectkey = context.config().get(PROJECT_KEY).orElse(null);
+	      String projectname = context.config().get(PROJECT_NAME).orElse(null);
 	      try {
 	    	  	PDFGenerator generator = new PDFGenerator(projectkey, fs, sonarHostUrl, username, password, reportType);
 	        	generator.execute();
 	        	}catch(Exception e) {
 	                LOG.error("Problem generating PDF file.", e);
-	       }
-	        
-	    
-	
+	       }	
+	      	String path = fs.workDir().getAbsolutePath() + "/" + projectname + PDF_EXTENSION;
+	        File pdf = new File(path);
+	        if (pdf.exists()) {
+	            FileUploader.upload(pdf, sonarHostUrl + PDFResources.PDF_REPORT_STORE_PATH, username, password);
+	        } else {
+	            LOG.error("PDF file not found in local filesystem. Report could not be sent to server.");
+	        }
 	}
 
 }

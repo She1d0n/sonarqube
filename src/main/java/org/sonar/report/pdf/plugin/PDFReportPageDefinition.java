@@ -17,16 +17,21 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.report.pdf.test;
+package org.sonar.report.pdf.plugin;
 
-import org.sonar.report.pdf.plugin.PDFReportPlugin;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.sonar.api.web.page.Context;
+import org.sonar.api.web.page.Page;
+import org.sonar.api.web.page.Page.Scope;
+import org.sonar.api.web.page.PageDefinition;
 
-public class PDFReportPluginTest {
 
-	@Test(groups = { "post-job" })
-	public void shouldDefineExtensions() {
-		Assert.assertEquals(new PDFReportPlugin().getExtensions().size(), 2);
+public class PDFReportPageDefinition implements PageDefinition {
+	 @Override
+	 public void define(Context context) {
+	    context
+	      .addPage(Page.builder("pdfreport/download")
+	        .setName("Download Pdf Report")
+	        .setScope(Scope.COMPONENT).build());	     
+	  }
 	}
-}
+
