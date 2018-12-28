@@ -64,10 +64,11 @@ public class FileUploader {
             }
             client.getHttpConnectionManager().getParams().setConnectionTimeout(10000);
             int status = client.executeMethod(filePost);
-            if (status == HttpStatus.SC_OK) {
+            String str = filePost.getResponseBodyAsString();
+            if (status == HttpStatus.SC_OK && !str.contains("error")) {
                 LOG.info("PDF uploaded.");
             } else {
-                LOG.error("Something went wrong storing the PDF at server side. Status: {}",status);
+                LOG.error("Something went wrong storing the PDF at server side. Error: {}",str);
             }
         } catch (Exception e) {
             LOG.error("Something went wrong storing the PDF at server side", e);

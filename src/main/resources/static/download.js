@@ -1,36 +1,23 @@
 window.registerExtension('pdfreport/download', function (options) {
-
-		  // let's create a flag telling if the page is still displayed
-		  var isDisplayed = true;
-
-		  console.log(options);
-
-		  // then do a Web API call to the /api/issues/search to get the number of issues
-		  // we pass `resolved: false` to request only unresolved issues
-		  // and `componentKeys: options.component.key` to request issues of the given project
-		  window.SonarRequest.getJSON('/api/issues/search', {
-		    resolved: false,
-		    componentKeys: options.component.key
-		  }).then(function (response) {
-
-		    // once the request is done, and the page is still displayed (not closed already)
-		    if (isDisplayed) {
-
-		      console.log(options.component.key);
-
-		      // let's create an `h2` tag and place the text inside
-		      var header = document.createElement('h2');
-		      header.textContent = 'The project ' + options.component.key + ' has ' + response.total + ' issues';
-
-		      // append just created element to the container
-		      options.el.appendChild(header);
-		    }
-		  });
-
-		  // return a function, which is called when the page is being closed
-		  return function () {
-
-		    // we unset the `isDisplayed` flag to ignore to Web API calls finished after the page is closed
-		    isDisplayed = false;
-		  };
-		});
+		options.el.textContent = '';
+    	var header = document.createElement('h2');  
+    	header.style.textAlign="center";
+    	header.textContent = 'Get quality info in a pdf document';
+    	options.el.appendChild(header);
+    	
+    	var curWwwPath=window.document.location.href;
+    	var pathName=window.document.location.pathname;
+    	var pos=curWwwPath.indexOf(pathName);
+    	var localhostPaht=curWwwPath.substring(0,pos);
+    	var file = document.createElement('h3');
+    	file.style.textAlign="center";
+    	var a = document.createElement("a");
+	    var node = document.createTextNode("download");
+	    a.appendChild(node);	 
+	    a.setAttribute("href",localhostPaht+"/api/pdfreport/get?componentKey="+options.component.key);
+	    file.appendChild(a);
+	    options.el.appendChild(file);
+	    return function () {
+	    	options.el.textContent = '';
+	   };
+});
