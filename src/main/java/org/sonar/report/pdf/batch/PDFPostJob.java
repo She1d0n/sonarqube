@@ -37,7 +37,7 @@ import org.sonar.report.pdf.util.FileUploader;
  * Extension point for PDF Job
  *
  */
-@ExtensionPoint
+
 public class PDFPostJob implements PostJob {
 
 	private static final String PDF_EXTENSION = ".pdf";
@@ -78,8 +78,7 @@ public class PDFPostJob implements PostJob {
    
 	@Override
 	public void describe(PostJobDescriptor descriptor) {
-		 descriptor.name("PDF Report")
-         .requireProperty(USERNAME, SONAR_P_KEY, REPORT_TYPE);
+		 descriptor.name("PDF Report");
 		
 	}
 
@@ -87,6 +86,7 @@ public class PDFPostJob implements PostJob {
 	public void execute(PostJobContext context) {
 
 		if(!shouldExecuteOnProject()) {
+			LOG.info("SKIP_PDF_KEY is true! Skip generating PDF Report!");
 			return;
 		}
 	
