@@ -1,7 +1,11 @@
 Sonar PDF Report Plugin
 =========================
 
-适用SonarQube版本 : 5.5--5.6.7,6.0--6.7.6。7.x以上不支持。
+适用SonarQube版本 : 5.5--7.5。
+
+- 2.0.X：适用SONARQUBE5.5--5.6.7版本
+- 2.1.x：适用SONARQUBE6.0-6.2版本
+- 3.0.x：适用SONARQUBE6.3+
 
 ## Description / Features
 
@@ -30,7 +34,7 @@ Sonar PDF Report Plugin
 
 ## Installation
 
-1. 将插件复制到SONARQUBE_HOME/extensions/plugins 目录
+1. 下载对应的版本，将插件复制到SONARQUBE_HOME/extensions/plugins 目录
 1. 重启SonarQube
 
 ## Usage
@@ -49,8 +53,9 @@ SonarQube PDF是一个 post-job任务. 因此，PDF 报告将在SonarQube分析�
 
 5.x版本：PDF在仪表盘中下载，如果没有下载界面，需要在“配置控件”中添加该控件
 
-6.x版本：因为UI变化无仪表盘页面，在客户端生成的.sonar 目录进行查看
-
-
-
 ![PDF Report example](output.jpg?raw=true "PDF Report example")
+
+6.x以及7.x版本：因为UI变化无仪表盘页面，在工程中More菜单下查看![1546412064834](output6.png)
+
+
+
