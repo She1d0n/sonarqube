@@ -47,7 +47,7 @@ import java.io.File;
 import java.util.Optional;
 
 import org.sonar.api.batch.fs.internal.DefaultFileSystem;
-import org.sonar.api.config.Configuration;
+import org.sonar.api.config.Settings;
 
 import org.sonar.report.pdf.batch.PDFPostJob;
 import org.testng.annotations.BeforeGroups;
@@ -55,13 +55,13 @@ import org.testng.annotations.Test;
 
 public class PDFPostJobTest {
 
-	private Configuration settings;
+	private Settings settings;
 	private DefaultFileSystem fs;
 	private PDFPostJob pdfPostJob;
 
 	@BeforeGroups(groups = { "post-job" })
 	public void before() {
-		settings = mock(Configuration.class);
+		settings = mock(Settings.class);
 		File tempDir = new File(System.getProperty("java.io.tmpdir"));
 		fs = new DefaultFileSystem(tempDir);
 		pdfPostJob = new PDFPostJob(settings, fs);
@@ -69,9 +69,8 @@ public class PDFPostJobTest {
 
 	@Test(groups = { "post-job" })
 	public void doNotExecuteIfSkipParameter() {
-		Optional<Boolean> opt =Optional.ofNullable(Boolean.TRUE);
 		when(settings.hasKey(PDFPostJob.SKIP_PDF_KEY)).thenReturn(Boolean.TRUE);
-		when(settings.getBoolean(PDFPostJob.SKIP_PDF_KEY)).thenReturn(opt);
+		when(settings.getBoolean(PDFPostJob.SKIP_PDF_KEY)).thenReturn(Boolean.TRUE);
 		assertFalse(pdfPostJob.shouldExecuteOnProject());
 	}
 

@@ -30,7 +30,7 @@
 	
 	<properties>
 		<sonar.pluginName>PDF Report</sonar.pluginName>
-		<sonar.version>6.5</sonar.version>
+		<sonar.version>6.3</sonar.version>
 		<!-- dependencies versions -->
 		<itext.version>2.1.4</itext.version>
 		<itextasian.version>2.1.7</itextasian.version>

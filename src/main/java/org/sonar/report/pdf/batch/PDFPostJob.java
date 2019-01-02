@@ -24,12 +24,11 @@ package org.sonar.report.pdf.batch;
 import org.slf4j.Logger;
 import java.io.File;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.ExtensionPoint;
 import org.sonar.api.batch.postjob.PostJob;
 import org.sonar.api.batch.postjob.PostJobContext;
 import org.sonar.api.batch.postjob.PostJobDescriptor;
 import org.sonar.api.batch.fs.FileSystem;
-import org.sonar.api.config.Configuration;
+import org.sonar.api.config.Settings;
 import org.sonar.report.pdf.PDFResources;
 import org.sonar.report.pdf.util.FileUploader;
 
@@ -60,10 +59,10 @@ public class PDFPostJob implements PostJob {
     public static final String SONAR_HOST_URL = "sonar.host.url";
     public static final String SONAR_HOST_URL_DEFAULT_VALUE = "http://localhost:9001";
 
-    private final Configuration  settings;
+    private final Settings  settings;
     private final FileSystem fs;
 
-    public PDFPostJob(Configuration  settings, FileSystem fs) {
+    public PDFPostJob(Settings  settings, FileSystem fs) {
         this.settings  = settings;
         this.fs = fs;
         
@@ -72,7 +71,7 @@ public class PDFPostJob implements PostJob {
 
 
     public boolean shouldExecuteOnProject() {
-         return settings.hasKey(SKIP_PDF_KEY) ? !settings.getBoolean(SKIP_PDF_KEY).orElse(SKIP_PDF_DEFAULT_VALUE) : !SKIP_PDF_DEFAULT_VALUE;
+    	return settings.hasKey(SKIP_PDF_KEY) ? !settings.getBoolean(SKIP_PDF_KEY) : !SKIP_PDF_DEFAULT_VALUE;
     }
 
    
@@ -92,12 +91,12 @@ public class PDFPostJob implements PostJob {
 	
 		  LOG.info("Executing decorator: PDF Report");	
 	       
-	      String sonarHostUrl = settings.hasKey(SONAR_HOST_URL) ? settings.get(SONAR_HOST_URL).orElse(SONAR_HOST_URL_DEFAULT_VALUE)
+		  String sonarHostUrl = settings.hasKey(SONAR_HOST_URL) ? settings.getString(SONAR_HOST_URL)
 	                : SONAR_HOST_URL_DEFAULT_VALUE;
-	      String username = settings.hasKey(USERNAME) ? settings.get(USERNAME).orElse(USERNAME_DEFAULT_VALUE) : USERNAME_DEFAULT_VALUE;
-	      String password = settings.hasKey(SONAR_P_KEY) ? settings.get(SONAR_P_KEY).orElse(SONAR_P_DEFAULT_VALUE) : SONAR_P_DEFAULT_VALUE;
-	      String reportType = settings.hasKey(REPORT_TYPE) ? settings.get(REPORT_TYPE).orElse(REPORT_TYPE_DEFAULT_VALUE) : REPORT_TYPE_DEFAULT_VALUE;
-	      String projectkey = context.config().get(PROJECT_KEY).orElse(null);
+	      String username = settings.hasKey(USERNAME) ? settings.getString(USERNAME) : USERNAME_DEFAULT_VALUE;
+	      String password = settings.hasKey(SONAR_P_KEY) ? settings.getString(SONAR_P_KEY) : SONAR_P_DEFAULT_VALUE;
+	      String reportType = settings.hasKey(REPORT_TYPE) ? settings.getString(REPORT_TYPE) : REPORT_TYPE_DEFAULT_VALUE;
+	      String projectkey = context.settings().getString(PROJECT_KEY);
 	      try {
 	    	  	PDFGenerator generator = new PDFGenerator(projectkey, fs, sonarHostUrl, username, password, reportType);
 	        	generator.execute();
