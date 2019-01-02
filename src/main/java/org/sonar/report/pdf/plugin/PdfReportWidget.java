@@ -20,12 +20,11 @@
 package org.sonar.report.pdf.plugin;
 
 import org.sonar.api.web.AbstractRubyTemplate;
-import org.sonar.api.web.RubyRailsWidget;
+import org.sonar.api.web.RubyRailsPage;
+import org.sonar.api.web.NavigationSection;
 
-/**
- * {@inheritDoc}
- */
-public final class PdfReportWidget extends AbstractRubyTemplate implements RubyRailsWidget {
+@NavigationSection({NavigationSection.RESOURCE})
+public final class PdfReportWidget extends AbstractRubyTemplate implements RubyRailsPage  {
 
     @Override
     protected String getTemplatePath() {
