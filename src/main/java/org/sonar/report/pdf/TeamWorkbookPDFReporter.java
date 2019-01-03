@@ -125,8 +125,7 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
         table.getDefaultCell().setColspan(9);
         table.getDefaultCell().setBackgroundColor(Color.WHITE);
         table.addCell(new Phrase(ruleName, Style.NORMAL_FONT));
-        String html = ruleDesc.replaceAll("<.*?>", " ").replaceAll("", "");
-        html = html.replaceAll("<.*?", "");  
+        String html = convertHtml(ruleDesc);
         table.getDefaultCell().setColspan(2);
         table.getDefaultCell().setBackgroundColor(new Color(255, 228, 181));
         table.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_RULE_DESC), Style.NORMAL_FONT));
@@ -183,6 +182,18 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
         table.setWidthPercentage(90);
         return table;
     }
+
+	private String convertHtml(final String ruleDesc) {
+		String html = ruleDesc.replaceAll("<.*?>", " ").replaceAll("", "");
+        html = html.replaceAll("<.*?", "");  
+        html = html.replaceAll("&lt;", "<");
+        html = html.replaceAll("&gt;", ">");
+        html = html.replaceAll("&rsquo;", "’");
+        html = html.replaceAll("&mdash;", "—");
+        html = html.replaceAll("&ndash;", "–");
+		return html;
+	
+	}
 
     /**
      * @see org.sonar.report.pdf.ExecutivePDFReporter#getReportType()
