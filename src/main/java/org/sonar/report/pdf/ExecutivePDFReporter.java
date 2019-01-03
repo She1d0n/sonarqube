@@ -264,30 +264,47 @@ public class ExecutivePDFReporter extends PDFReporter {
      * @return The table (iText table) ready to add to the document
      */
     private PdfPTable createCodingRuleViolationsDetails(final Project project) {
-        PdfPTable detailCodingRulesViolationsTable = new PdfPTable(3);
-        Style.noBorderTable(detailCodingRulesViolationsTable);
-        detailCodingRulesViolationsTable.setSpacingBefore(10);
-		// total violations
-		detailCodingRulesViolationsTable.addCell(
-				createTable(project, PDFResources.GENERAL_VIOLATIONS, MetricKeys.VIOLATIONS));
-        // blocker violations
-        detailCodingRulesViolationsTable.addCell(
-                createTable(project, PDFResources.GENERAL_BLOCKER_VIOLATIONS, MetricKeys.BLOCKER_VIOLATIONS));
-        // critical violations
-        detailCodingRulesViolationsTable.addCell(
-                createTable(project, PDFResources.GENERAL_CRITICAL_VIOLATIONS, MetricKeys.CRITICAL_VIOLATIONS));
-        // major violations
-        detailCodingRulesViolationsTable.addCell(
-                createTable(project, PDFResources.GENERAL_MAJOR_VIOLATIONS, MetricKeys.MAJOR_VIOLATIONS));
-        // minor violations
-        detailCodingRulesViolationsTable.addCell(
-                createTable(project, PDFResources.GENERAL_MINOR_VIOLATIONS, MetricKeys.MINOR_VIOLATIONS));
-        // info violations
-        detailCodingRulesViolationsTable.addCell(
-                createTable(project, PDFResources.GENERAL_INFO_VIOLATIONS, MetricKeys.INFO_VIOLATIONS));
-        
-        detailCodingRulesViolationsTable.setSpacingAfter(20);
-        return detailCodingRulesViolationsTable;
+    	 PdfPTable codeAnalysisTable = new PdfPTable(3);
+         Style.noBorderTable(codeAnalysisTable);
+         codeAnalysisTable.setWidthPercentage(80);
+         
+         PdfPTable violations = new PdfPTable(1);
+         Style.noBorderTable(violations);
+         violations.addCell(new Phrase(project.getMeasure(MetricKeys.VIOLATIONS).getFormatValue(), Style.DASHBOARD_DATA_FONT));
+         violations.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_VIOLATIONS), Style.NORMAL_FONT));   
+         
+         PdfPTable violationsname = new PdfPTable(1);
+         Style.noBorderTable(violationsname);
+         violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_OPEN_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
+         violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_REOPENED_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
+         violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_CONFIRMED_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
+         violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_FALSE_POSITIVE_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
+         violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_WONT_FIX_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
+         violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_BLOCKER_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
+         violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_CRITICAL_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
+         violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_MAJOR_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
+         violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_MINOR_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
+         violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_INFO_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
+
+         PdfPTable violationsvalue = new PdfPTable(1);
+         Style.noBorderTable(violationsvalue);
+         Style.alignCenterTable(violationsvalue);
+         violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.OPEN_ISSUES).getFormatValue() , Style.DASHBOARD_DATA_FONT_2));
+         violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.REOPENED_ISSUES).getFormatValue() , Style.DASHBOARD_DATA_FONT_2));
+         violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.CONFIRMED_ISSUES).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+         violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.FALSE_POSITIVE_ISSUES).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+         violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.WONT_FIX_ISSUES).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+         violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.BLOCKER_VIOLATIONS).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+         violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.CRITICAL_VIOLATIONS).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+         violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.MAJOR_VIOLATIONS).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+         violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.MINOR_VIOLATIONS).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+         violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.INFO_VIOLATIONS).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));        
+         codeAnalysisTable.setSpacingBefore(10);
+         codeAnalysisTable.addCell(violations);
+         codeAnalysisTable.addCell(violationsname);
+         codeAnalysisTable.addCell(violationsvalue);
+         codeAnalysisTable.setSpacingAfter(20);
+         return codeAnalysisTable;
     }
 
     /**
