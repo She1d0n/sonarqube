@@ -182,12 +182,16 @@ public class ExecutivePDFReporter extends PDFReporter {
         printDetailsForProject(project, chapter1);
         try {
             document.add(chapter1);
-            for (Project subProject : project.getSubprojects()) {
-                ChapterAutoNumber chapterN = new ChapterAutoNumber(
-                        new Paragraph(subProject.getName(), Style.CHAPTER_FONT));
-                printDetailsForProject(subProject, chapterN);
-                document.add(chapterN);
+            List<Project> projects = project.getSubprojects();
+            if (projects.size()>1) {
+            	 for (Project subProject : projects) {
+                     ChapterAutoNumber chapterN = new ChapterAutoNumber(
+                             new Paragraph(subProject.getName(), Style.CHAPTER_FONT));
+                     printDetailsForProject(subProject, chapterN);
+                     document.add(chapterN);
+                 }
             }
+           
         } catch (DocumentException e) {
             throw new ReportException("Error printing PDF Body", e);
         }
