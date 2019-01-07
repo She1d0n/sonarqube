@@ -64,22 +64,7 @@ public class FileInfoBuilder extends AbstractBuilder {
         }
         return fileInfoList;
     }
-    /**
-    public static List<FileInfo> initFromDocument(final List<Resource> resources, final FileInfoTypes type) {
-        List<FileInfo> fileInfoList = new LinkedList<>();
-        if (resources != null) {
-            for (Resource fileNode : resources) {
-                FileInfo fileInfo = new FileInfo();
-                initFromNode(fileInfo, fileNode, type);
-                if (fileInfo.isContentSet(type)) {
-                    fileInfoList.add(fileInfo);
-                }
-
-            }
-        }
-        return fileInfoList;
-    }
-    **/
+    
 
     /**
      * A FileInfo object could contain information about violations, ccn or
