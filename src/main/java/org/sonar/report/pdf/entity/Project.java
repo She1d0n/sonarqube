@@ -20,6 +20,7 @@
 package org.sonar.report.pdf.entity;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.sonar.report.pdf.util.MetricKeys;
@@ -47,6 +48,9 @@ public class Project implements Entity {
 
     // Most violated rules
     private List<Rule> mostViolatedRules;
+    
+    // Qprofile rules
+    private List<org.sonarqube.ws.model.Rule> qprofileRules;
 
     // Most complex elements
     private List<FileInfo> mostComplexFiles;
@@ -135,6 +139,10 @@ public class Project implements Entity {
     public List<Rule> getMostViolatedRules() {
         return mostViolatedRules;
     }
+    
+    public List<org.sonarqube.ws.model.Rule> getQprofileRules() {
+        return qprofileRules;
+    }
 
     public List<FileInfo> getMostViolatedFiles() {
         return mostViolatedFiles;
@@ -163,4 +171,9 @@ public class Project implements Entity {
     public void setMostDuplicatedFiles(final List<FileInfo> mostDuplicatedFiles) {
         this.mostDuplicatedFiles = mostDuplicatedFiles;
     }
+
+	public void setQprofileRules(final List<org.sonarqube.ws.model.Rule> qprofileRules) {
+		 this.qprofileRules = qprofileRules;
+		
+	}
 }
