@@ -33,6 +33,9 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.report.pdf.PDFResources;
@@ -46,6 +49,7 @@ import org.sonar.report.pdf.entity.Severity;
 import org.sonar.report.pdf.entity.Violation;
 import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.MetricKeys;
+import org.sonarqube.ws.client.JdkUtils;
 import org.sonarqube.ws.client.WSClient;
 import org.sonarqube.ws.model.Components;
 import org.sonarqube.ws.model.ComponentsTree;
@@ -57,6 +61,8 @@ import org.sonarqube.ws.query.ComponentsQuery;
 import org.sonarqube.ws.query.IssueQuery;
 import org.sonarqube.ws.query.MeasuresComponentTreeQuery;
 import org.sonarqube.ws.query.RuleQuery;
+
+
 /**
  * Builder for the whole project
  *
@@ -135,6 +141,7 @@ public class ProjectBuilder extends AbstractBuilder {
             initMostViolatedFiles(project);
             initMostComplexElements(project);
             initMostDuplicatedFiles(project);
+            initQprofilerules(project);
             
             LOG.debug("Accessing Sonar: getting child projects");
 
@@ -177,6 +184,7 @@ public class ProjectBuilder extends AbstractBuilder {
         project.setMostComplexFiles(new LinkedList<FileInfo>());
         project.setMostDuplicatedFiles(new LinkedList<FileInfo>());
         project.setMostViolatedFiles(new LinkedList<FileInfo>());
+        project.setQprofileRules(new LinkedList<org.sonarqube.ws.model.Rule>());
     }
   
     /**
@@ -379,6 +387,70 @@ public class ProjectBuilder extends AbstractBuilder {
 
         return added;
     }
+    
+    /**
+     * Initialize Qprofilerules
+     * 
+     * @param project
+     *            current project
+     */
+    private void initQprofilerules(final Project project) {
+    	 LOG.info("    Retrieving Qprofile rules");
+    	 String qualityProfile = project.getMeasure(MetricKeys.PROFILE).getDataValue();
+    	 List<String> qprofiles = new ArrayList<>();
+         if (qualityProfile !=null && !qualityProfile.isEmpty()) {
+         JSONParser parser = new JSONParser();
+         JSONArray json;
+         try {
+			json = (JSONArray) parser.parse(qualityProfile);
+			if (!json.isEmpty()) {
+				for (int i=0; i<json.size();i++)
+					{
+						 Map<String, String> properties = JdkUtils.getInstance().getFieldsWithValues(json.get(i));
+						 if (properties.containsKey("key")) {
+							 qprofiles.add(properties.get("key"));							 
+					}
+	             }
+			List<org.sonarqube.ws.model.Rule> rulesByQprofile = getQprofilerules(qprofiles);
+			project.setQprofileRules(rulesByQprofile);
+			List<org.sonarqube.ws.model.Rule> test=project.getQprofileRules();
+			System.out.println("===================");
+	        }
+		} catch (ParseException | ReportException e) {
+			 LOG.error("Can not get Qprofilerules. ", e);
+		}
+        
+    }
+    }
+
+    /**
+     * get Qprofilerules
+     * 
+     * @param qprofiles
+     *            current qprofiles
+     * @return List<org.sonarqube.ws.model.Rule>
+     * @throws ReportException 
+     */
+	private List<org.sonarqube.ws.model.Rule> getQprofilerules(List<String> qprofiles) throws ReportException {
+		List<org.sonarqube.ws.model.Rule> rulesByQprofile = new ArrayList<>();
+		for (String qprofile:qprofiles) {
+			 int size = 1;
+			 for (int i = 1;i<=size; i++) {
+				 RuleQuery query = RuleQuery.createqprofile();
+				 query.setActivation(true);
+				 query.setQprofile(qprofile);
+				 query.setP(i);
+				 query.setPs(100);
+				 query.setF("name,severity,langName");
+				 org.sonarqube.ws.model.Rules rules = sonar.find(query);
+				 int total=rules.getTotal();
+				 size=(int)Math.ceil((double)total/100);
+				 List<org.sonarqube.ws.model.Rule>  temprules = rules.getRules();
+				 rulesByQprofile.addAll(temprules);
+				}			 
+		 }
+		return rulesByQprofile;
+	}
 
     /**
      * Container of issues
