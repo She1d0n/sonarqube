@@ -21,16 +21,25 @@ package org.sonar.report.pdf;
 
 import java.awt.Color;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.report.pdf.entity.Project;
 import org.sonar.report.pdf.entity.Rule;
 import org.sonar.report.pdf.entity.Violation;
 import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.Credentials;
+import org.sonar.report.pdf.util.MetricKeys;
+import org.sonarqube.ws.client.JdkUtils;
+import org.sonarqube.ws.query.RuleQuery;
 
 import com.lowagie.text.Chapter;
 import com.lowagie.text.Paragraph;
@@ -48,6 +57,8 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
      * 
      */
     private static final long serialVersionUID = 4994742577755351762L;
+    private static final Logger LOG = LoggerFactory.getLogger(TeamWorkbookPDFReporter.class);
+
 
     public TeamWorkbookPDFReporter(final Credentials credentials, final URL logo, final String projectKey,
             final Properties configProperties, final Properties langProperties) {
@@ -83,7 +94,7 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
             }
         }
     }
-
+   
     /**
      * Add violation
      * 

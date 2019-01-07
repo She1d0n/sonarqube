@@ -32,6 +32,8 @@ public class Rule implements Model {
     String lang;
     String langName;
     String htmlDesc;
+    String type;
+    String severity;
     
     public String getKey() {
         return key;

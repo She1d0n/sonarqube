@@ -38,9 +38,13 @@ public class RuleQuery extends Query<Rules> {
     private final Map<String, Serializable> params = new HashMap<>();
     public static final String BASE_URL = "/api/rules/search";
 
+    public RuleQuery() {
+    }
+    
     public RuleQuery(String ruleKey) {
         setRuleKey(ruleKey);
     }
+    
 
     @Override
     public final Class<Rules> getModelClass() {
@@ -50,11 +54,33 @@ public class RuleQuery extends Query<Rules> {
     public static RuleQuery create(String ruleKey) {
         return new RuleQuery(ruleKey);
     }
+    
+    public static RuleQuery createqprofile() {
+        return new RuleQuery();
+    }
 
     public RuleQuery setRuleKey(String ruleKey) {
         return (RuleQuery) addParam("rule_key", ruleKey);
     }
-
+    
+    public RuleQuery setQprofile(String qprofile) {
+        return (RuleQuery) addParam("qprofile", qprofile);
+    }
+    
+    public RuleQuery setActivation(Boolean activation) {
+        return (RuleQuery) addParam("activation", activation);
+    }
+    
+    public RuleQuery setF(String f) {
+        return (RuleQuery) addParam("f", f);
+    }
+    public RuleQuery setP(int p) {
+        return (RuleQuery) addParam("p", p);
+    }
+    
+    public RuleQuery setPs(int ps) {
+        return (RuleQuery) addParam("ps", ps);
+    }
     @Override
     public String getBaseUrl() {
         return BASE_URL;

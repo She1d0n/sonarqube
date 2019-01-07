@@ -37,11 +37,22 @@ public class Rules implements Model {
     private final List<Component> actives = new ArrayList<>();
     private final List<User> facets = new ArrayList<>();
     private Paging paging;
+    private int total;
+    private int p;
+    private int ps;
 
     public Paging getPaging() {
         return paging;
     }
-
+    public int getTotal() {
+        return total;
+    }
+    public int getP() {
+        return p;
+    }
+    public int getPs() {
+        return ps;
+    }
     public void setPaging(Paging paging) {
         this.paging = paging;
     }
