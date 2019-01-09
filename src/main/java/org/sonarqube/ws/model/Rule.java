@@ -50,7 +50,15 @@ public class Rule implements Model {
     public String getDescription() {
         return htmlDesc;
     }
+    
+    public String getType() {
+        return type;
+    }
 
+    public String getSeverity() {
+        return severity;
+    }
+    
     public void setName(String name) {
         this.name = name;
     }

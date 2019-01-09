@@ -146,13 +146,21 @@ public final class PDFResources implements Serializable {
     public static final String GENERAL_REPORT_OVERVIEW = "general.reportOverview";
 
     public static final String GENERAL_VIOLATIONS_DETAILS = "general.violationsDetails";
+    public static final String GENERAL_QPROFILES = "general.qprofiles";
 
     public static final String GENERAL_LINE = "general.line";
     public static final String GENERAL_FILE = "general.file";
     public static final String GENERAL_RULE = "general.rule";
     public static final String GENERAL_RULE_DESC = "general.ruledesc";
+    public static final String GENERAL_VIOLATIONS_TYPE = "general.violationsType";
+    public static final String GENERAL_VIOLATIONS_SERVERITY = "general.violationsSeverity";
 
     public static final String MAIN_TEXT_MISC_OVERVIEW = "main.text.misc.overview";
+    public static final String MAIN_TEXT_MISC_OVERVIEW1 = "main.text.misc.overview1";
+    public static final String MAIN_TEXT_MISC_OVERVIEW2 = "main.text.misc.overview2";
+    public static final String MAIN_TEXT_MISC_OVERVIEW3 = "main.text.misc.overview3";
+    public static final String MAIN_TEXT_MISC_OVERVIEW4 = "main.text.misc.overview4";
+    public static final String MAIN_TEXT_MISC_OVERVIEW5 = "main.text.misc.overview5";
 
     public static final String METRICS_CCN_CLASSES_COUNT_DISTRIBUTION = "metrics.ccnClassesCountDistribution";
 
