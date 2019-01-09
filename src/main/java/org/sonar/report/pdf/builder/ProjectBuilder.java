@@ -44,6 +44,7 @@ import org.sonar.report.pdf.entity.FileInfo;
 import org.sonar.report.pdf.entity.FileInfoTypes;
 import org.sonar.report.pdf.entity.Measures;
 import org.sonar.report.pdf.entity.Project;
+import org.sonar.report.pdf.entity.Qprofile;
 import org.sonar.report.pdf.entity.Rule;
 import org.sonar.report.pdf.entity.Severity;
 import org.sonar.report.pdf.entity.Violation;
@@ -184,7 +185,7 @@ public class ProjectBuilder extends AbstractBuilder {
         project.setMostComplexFiles(new LinkedList<FileInfo>());
         project.setMostDuplicatedFiles(new LinkedList<FileInfo>());
         project.setMostViolatedFiles(new LinkedList<FileInfo>());
-        project.setQprofileRules(new LinkedList<org.sonarqube.ws.model.Rule>());
+        project.setQprofile(new LinkedList<Qprofile>());
     }
   
     /**
@@ -397,7 +398,7 @@ public class ProjectBuilder extends AbstractBuilder {
     private void initQprofilerules(final Project project) {
     	 LOG.info("    Retrieving Qprofile rules");
     	 String qualityProfile = project.getMeasure(MetricKeys.PROFILE).getDataValue();
-    	 List<String> qprofiles = new ArrayList<>();
+    	 List<Qprofile> qprofiles = new ArrayList<>();
          if (qualityProfile !=null && !qualityProfile.isEmpty()) {
          JSONParser parser = new JSONParser();
          JSONArray json;
@@ -408,13 +409,16 @@ public class ProjectBuilder extends AbstractBuilder {
 					{
 						 Map<String, String> properties = JdkUtils.getInstance().getFieldsWithValues(json.get(i));
 						 if (properties.containsKey("key")) {
-							 qprofiles.add(properties.get("key"));							 
-					}
+							 Qprofile qprofile = new Qprofile();
+							 qprofile.setKey(properties.get("key"));
+							 qprofile.setName(properties.get("name"));
+							 qprofile.setLanguage(properties.get("language"));
+							 List<org.sonarqube.ws.model.Rule> rulesByQprofile = getQprofilerules(properties.get("key"));
+							 qprofile.setQprofileRules(rulesByQprofile);
+							 qprofiles.add(qprofile);
+						 }
 	             }
-			List<org.sonarqube.ws.model.Rule> rulesByQprofile = getQprofilerules(qprofiles);
-			project.setQprofileRules(rulesByQprofile);
-			List<org.sonarqube.ws.model.Rule> test=project.getQprofileRules();
-			System.out.println("===================");
+				project.setQprofile(qprofiles);
 	        }
 		} catch (ParseException | ReportException e) {
 			 LOG.error("Can not get Qprofilerules. ", e);
@@ -431,24 +435,22 @@ public class ProjectBuilder extends AbstractBuilder {
      * @return List<org.sonarqube.ws.model.Rule>
      * @throws ReportException 
      */
-	private List<org.sonarqube.ws.model.Rule> getQprofilerules(List<String> qprofiles) throws ReportException {
+	private List<org.sonarqube.ws.model.Rule> getQprofilerules(String qprofile) throws ReportException {
 		List<org.sonarqube.ws.model.Rule> rulesByQprofile = new ArrayList<>();
-		for (String qprofile:qprofiles) {
-			 int size = 1;
-			 for (int i = 1;i<=size; i++) {
-				 RuleQuery query = RuleQuery.createqprofile();
-				 query.setActivation(true);
-				 query.setQprofile(qprofile);
-				 query.setP(i);
-				 query.setPs(100);
-				 query.setF("name,severity,langName");
-				 org.sonarqube.ws.model.Rules rules = sonar.find(query);
-				 int total=rules.getTotal();
-				 size=(int)Math.ceil((double)total/100);
-				 List<org.sonarqube.ws.model.Rule>  temprules = rules.getRules();
-				 rulesByQprofile.addAll(temprules);
-				}			 
-		 }
+		int size = 1;
+		for (int i = 1;i<=size; i++) {
+			RuleQuery query = RuleQuery.createqprofile();
+			query.setActivation(true);
+			query.setQprofile(qprofile);
+			query.setP(i);
+			query.setPs(100);
+			query.setF("name,severity,langName");
+			org.sonarqube.ws.model.Rules rules = sonar.find(query);
+			int total=rules.getTotal();
+			size=(int)Math.ceil((double)total/100);
+			List<org.sonarqube.ws.model.Rule>  temprules = rules.getRules();
+			rulesByQprofile.addAll(temprules);
+		}			 
 		return rulesByQprofile;
 	}
 

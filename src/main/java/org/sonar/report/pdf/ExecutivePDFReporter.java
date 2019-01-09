@@ -26,22 +26,19 @@ import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+
 import java.util.Properties;
 
 
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.report.pdf.entity.FileInfo;
 import org.sonar.report.pdf.entity.Project;
+import org.sonar.report.pdf.entity.Qprofile;
 import org.sonar.report.pdf.entity.Rule;
 import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.Credentials;
 import org.sonar.report.pdf.util.MetricKeys;
-import org.sonarqube.ws.client.JdkUtils;
 
 import com.lowagie.text.Chapter;
 import com.lowagie.text.ChapterAutoNumber;
@@ -70,10 +67,6 @@ public class ExecutivePDFReporter extends PDFReporter {
      * 
      */
     private static final long serialVersionUID = -5378403769337739685L;
-
-    private static final String QUALITY_PROFILE_NAME = "name";
-
-	private static final String QUALITY_PROFILE_LANGUAGE = "language";
 
     private static final Logger LOG = LoggerFactory.getLogger(ExecutivePDFReporter.class);
 
@@ -145,27 +138,16 @@ public class ExecutivePDFReporter extends PDFReporter {
             title.addCell(new Phrase(projectRow, Style.FRONTPAGE_FONT_1));
             title.addCell(new Phrase(versionRow, Style.FRONTPAGE_FONT_1));
             title.addCell(new Phrase(descriptionRow, Style.FRONTPAGE_FONT_2));
-            String qualityProfile = super.getProject().getMeasure(MetricKeys.PROFILE).getDataValue();
-            if (qualityProfile !=null && !qualityProfile.isEmpty()) {
-            JSONParser parser = new JSONParser();
-            JSONArray json = (JSONArray) parser.parse(qualityProfile);
-            if (!json.isEmpty()) {
-				for (int i=0; i<json.size();i++)
-				{
-					 Map<String, String> properties = JdkUtils.getInstance().getFieldsWithValues(json.get(i));
-					 if (properties.containsKey(QUALITY_PROFILE_NAME)) {
-						title.addCell(new Phrase(properties.get(QUALITY_PROFILE_LANGUAGE)+':'+properties.get(QUALITY_PROFILE_NAME), Style.FRONTPAGE_FONT_3));
-					}
-
-                }
-            }
+            
+            for (Qprofile qprofile :  super.getProject().getQprofile()) {
+				title.addCell(new Phrase(qprofile.getLanguage()+':'+qprofile.getName(), Style.FRONTPAGE_FONT_3));           	
             }
             title.addCell(new Phrase(dateRow, Style.FRONTPAGE_FONT_3));
             title.setTotalWidth(pageSize.getWidth() - frontPageDocument.leftMargin() - frontPageDocument.rightMargin());
             title.writeSelectedRows(0, -1, frontPageDocument.leftMargin(), Style.FRONTPAGE_LOGO_POSITION_Y - 150,
                     frontPageWriter.getDirectContent());
 
-        } catch (IOException | DocumentException | ParseException e) {
+        } catch (IOException | DocumentException e) {
             LOG.error("Can not generate front page", e);
         }
     }
@@ -179,6 +161,17 @@ public class ExecutivePDFReporter extends PDFReporter {
         // Chapter 1: Report Overview (Parent project)
         ChapterAutoNumber chapter1 = new ChapterAutoNumber(new Paragraph(project.getName(), Style.CHAPTER_FONT));
         chapter1.add(new Paragraph(getTextProperty(PDFResources.MAIN_TEXT_MISC_OVERVIEW), Style.NORMAL_FONT));
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String dateRow = df.format(super.getProject().getMeasures().getDate());
+        StringBuilder qprofiles = new StringBuilder();
+        int i = 0;
+        for (Qprofile qprofile : project.getQprofile()) {
+        	qprofiles.append("  "+qprofile.getLanguage()+":"+qprofile.getName());
+        	i += qprofile.getQprofileRules().size();
+        	
+        }
+        chapter1.add(new Paragraph(getTextProperty(PDFResources.MAIN_TEXT_MISC_OVERVIEW1)+project.getName()+getTextProperty(PDFResources.MAIN_TEXT_MISC_OVERVIEW2)
+        		+dateRow+getTextProperty(PDFResources.MAIN_TEXT_MISC_OVERVIEW3)+qprofiles.toString()+getTextProperty(PDFResources.MAIN_TEXT_MISC_OVERVIEW4)+i+getTextProperty(PDFResources.MAIN_TEXT_MISC_OVERVIEW5),Style.NORMAL_FONT));
         printDetailsForProject(project, chapter1);
         try {
             document.add(chapter1);
@@ -214,7 +207,6 @@ public class ExecutivePDFReporter extends PDFReporter {
         printDashboard(project, sectionN1);
         Section sectionN2 = chapter
                 .addSection(new Paragraph(getTextProperty(PDFResources.GENERAL_VIOLATIONS_ANALYSIS), Style.TITLE_FONT));
-
         printMostViolatedRules(project, sectionN2);
         printMostViolatedFiles(project, sectionN2);
         printMostComplexFiles(project, sectionN2);
@@ -248,16 +240,17 @@ public class ExecutivePDFReporter extends PDFReporter {
      * @throws ReportException
      *             ReportException
      */
-    protected void printDashboard(final Project project, final Section section) throws ReportException {
+    protected void printDashboard(final Project project, final Section section) {
         section.add(Chunk.NEWLINE);
-        // Static Analysis
-        section.add(createStaticAnalysis(project));
-        // Dynamic Analysis
-        section.add(createDynamicAnalysis(project));
         // Coding issues analysis
         section.add(createCodingRuleViolations(project));
         // Coding issues details
         section.add(createCodingRuleViolationsDetails(project));
+        // Static Analysis
+        section.add(createStaticAnalysis(project));
+        // Dynamic Analysis
+        section.add(createDynamicAnalysis(project));
+       
     }
 
     /**
