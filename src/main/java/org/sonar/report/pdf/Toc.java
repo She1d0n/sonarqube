@@ -36,6 +36,7 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.Section;
 import com.lowagie.text.pdf.PdfCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEventHelper;
@@ -49,11 +50,10 @@ import com.lowagie.text.pdf.PdfWriter;
 public class Toc extends PdfPageEventHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(Events.class);
-
     private Document tocDocument;
     private ByteArrayOutputStream tocOutputStream;
     private PdfPTable content;
-    private PdfWriter writer;
+
 
     public Toc() {
 
@@ -108,12 +108,15 @@ public class Toc extends PdfPageEventHelper {
         if (depth == 2) {
             content.getDefaultCell().setIndent(10);
             content.addCell(new Phrase(title.getContent(), Style.CONTENTS_FONT));
+            content.getDefaultCell().setHorizontalAlignment(PdfCell.ALIGN_RIGHT);
+            content.addCell(new Phrase(Integer.toString(document.getPageNumber()), new Font(Font.HELVETICA, 10)));
         } else {
             content.getDefaultCell().setIndent(20);
             content.addCell(new Phrase(title.getContent(), Style.CONTENTS_FONT));
+            content.getDefaultCell().setHorizontalAlignment(PdfCell.ALIGN_RIGHT);
+            content.addCell(new Phrase(Integer.toString(document.getPageNumber()), new Font(Font.HELVETICA, 10)));
         }
         content.getDefaultCell().setIndent(0);
-        content.addCell("");
     }
 
     /**
@@ -139,7 +142,7 @@ public class Toc extends PdfPageEventHelper {
 
     public void setHeader(final Header header) {
         tocOutputStream = new ByteArrayOutputStream();
-        writer = null;
+        PdfWriter writer = null;
         try {
             writer = PdfWriter.getInstance(tocDocument, tocOutputStream);
             writer.setPageEvent(header);
