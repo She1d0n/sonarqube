@@ -24,8 +24,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
-
+import com.lowagie.text.pdf.SimpleBookmark;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.report.pdf.builder.ProjectBuilder;
@@ -41,8 +44,9 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
 import com.lowagie.text.PageSize;
-import com.lowagie.text.pdf.PdfCopy;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfWriter;
 
 /**
@@ -126,7 +130,9 @@ public abstract class PDFReporter implements Serializable {
      * @throws ReportException
      *             ReportException
      */
-    private ByteArrayOutputStream createFinalReport(Toc tocDocument, ByteArrayOutputStream mainDocumentBaos,
+    
+    @SuppressWarnings("unchecked")
+	private ByteArrayOutputStream createFinalReport(Toc tocDocument, ByteArrayOutputStream mainDocumentBaos,
             ByteArrayOutputStream frontPageDocumentBaos) throws ReportException {
         ByteArrayOutputStream finalBaos = new ByteArrayOutputStream();
         try {
@@ -134,25 +140,31 @@ public abstract class PDFReporter implements Serializable {
             PdfReader mainDocumentReader = new PdfReader(mainDocumentBaos.toByteArray());
             PdfReader tocDocumentReader = new PdfReader(tocDocument.getTocOutputStream().toByteArray());
             PdfReader frontPageDocumentReader = new PdfReader(frontPageDocumentBaos.toByteArray());
-
             // New document
-            Document documentWithToc = new Document(tocDocumentReader.getPageSizeWithRotation(1));
-            PdfCopy copy = new PdfCopy(documentWithToc, finalBaos);
-            documentWithToc.open();
-            copy.addPage(copy.getImportedPage(frontPageDocumentReader, 1));
+            List<HashMap<String, Object>> bookmarks = new ArrayList<>();
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("Title",getTextProperty(PDFResources.MAIN_TABLE_OF_CONTENTS));
+            map.put("Action", "GoTo");
+            map.put("Page", 2 + " FitH 732");
+            bookmarks.add(map);            
+            PdfStamper stamp = new PdfStamper(mainDocumentReader,finalBaos); 
+            Rectangle pagesize = tocDocumentReader.getPageSize(1);
             for (int i = 1; i <= tocDocumentReader.getNumberOfPages(); i++) {
-                copy.addPage(copy.getImportedPage(tocDocumentReader, i));
+            	stamp.insertPage(i, pagesize);
+            	stamp.replacePage(tocDocumentReader,i, i);
             }
-            for (int i = 1; i <= mainDocumentReader.getNumberOfPages(); i++) {
-                copy.addPage(copy.getImportedPage(mainDocumentReader, i));
-            }
-            documentWithToc.close();
+            pagesize = frontPageDocumentReader.getPageSize(1);
+            stamp.insertPage(1, pagesize);
+        	stamp.replacePage(frontPageDocumentReader, 1, 1);
+            bookmarks.addAll(SimpleBookmark.getBookmark(mainDocumentReader));
+            stamp.setOutlines(bookmarks);            
+            stamp.close();          
         } catch (IOException | DocumentException e) {
             throw new ReportException("Error creating final report", e);
         }
         return finalBaos;
     }
-
+   
     /**
      * Gets current project
      * 
