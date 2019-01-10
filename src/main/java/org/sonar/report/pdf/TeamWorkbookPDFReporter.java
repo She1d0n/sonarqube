@@ -155,7 +155,7 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
 				  createTableByServerity(table, type, entry, serverity);}
 		  }
 		for(Map.Entry<String, List<org.sonarqube.ws.model.Rule>> entry : entrys.getValue().entrySet()) {
-			  if (entry.getKey().equals("MAJOR")) {
+			  if (entry.getKey().equals("MINOR")) {
 				  String serverity=getTextProperty(PDFResources.GENERAL_MINOR_VIOLATIONS);
 				  createTableByServerity(table, type, entry, serverity);}			  
 		  }
