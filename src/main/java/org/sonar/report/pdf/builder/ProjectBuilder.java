@@ -138,11 +138,13 @@ public class ProjectBuilder extends AbstractBuilder {
         if (resources != null) {
             initFromNode(project, resources);
             initMeasures(project);
+            initResolutionsIssues(project);
             initMostViolatedRules(project);
             initMostViolatedFiles(project);
             initMostComplexElements(project);
             initMostDuplicatedFiles(project);
             initQprofilerules(project);
+            
             
             LOG.debug("Accessing Sonar: getting child projects");
 
@@ -181,6 +183,8 @@ public class ProjectBuilder extends AbstractBuilder {
         project.setName(resources.getBaseComponent().getName());
         project.setDescription(resources.getBaseComponent().getDescription());
         project.setSubprojects(new LinkedList<Project>());
+        project.setFixedissues(0);
+        project.setRemovedissues(0);
         project.setMostViolatedRules(new LinkedList<Rule>());
         project.setMostComplexFiles(new LinkedList<FileInfo>());
         project.setMostDuplicatedFiles(new LinkedList<FileInfo>());
@@ -204,7 +208,22 @@ public class ProjectBuilder extends AbstractBuilder {
     }
   
     
-    
+    private void initResolutionsIssues(final Project project) throws ReportException {
+        LOG.info("    Retrieving Resolutions Issues");	
+		project.setFixedissues(getIssuesbyResolutions(project,"FIXED"));	
+		project.setRemovedissues(getIssuesbyResolutions(project,"REMOVED"));
+		
+    }
+
+	private int getIssuesbyResolutions(final Project project,String resolutions) throws ReportException {
+		IssueQuery query = IssueQuery.create();
+        query.componentKeys(project.getKey());
+		query.resolved(true);
+		query.resolutions(resolutions);
+		Issues result = sonar.find(query);
+		int total=result.getPaging().total();
+		return total;
+	}
 
     private void initMostViolatedRules(final Project project) throws ReportException {
         LOG.info("    Retrieving most violated rules");

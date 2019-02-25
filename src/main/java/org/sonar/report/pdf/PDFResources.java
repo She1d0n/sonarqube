@@ -89,6 +89,8 @@ public final class PDFResources implements Serializable {
     public static final String GENERAL_CONFIRMED_VIOLATIONS = "general.confirmededViolations";
     public static final String GENERAL_FALSE_POSITIVE_VIOLATIONS = "general.falsePositiveViolations";
     public static final String GENERAL_WONT_FIX_VIOLATIONS = "general.wontFixViolations";
+    public static final String GENERAL_FIXED_VIOLATIONS = "general.fixedViolations";
+    public static final String GENERAL_REMOVED_VIOLATIONS = "general.removedViolations";
 	
 	public static final String GENERAL_RELIABILITY_REMEDIATION_EFFORT = "general.ReliabilityRemediationEffort";	
 	

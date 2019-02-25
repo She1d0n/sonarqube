@@ -174,6 +174,7 @@ public class IssueQuery extends Query<Issues> {
     public IssueQuery statuses(String... statuses) {
         return (IssueQuery) addParam("statuses", statuses);
     }
+    
 
     public IssueQuery tags(String... tags) {
         return (IssueQuery) addParam("tags", tags);

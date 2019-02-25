@@ -38,6 +38,8 @@ public class Project implements Entity {
     private String key;
     private String name;
     private String description;
+    private Integer fixedissues;
+    private Integer removedissues;
 
     // Measures
     private Measures measures;
@@ -98,6 +100,22 @@ public class Project implements Entity {
     public void setName(final String name) {
         this.name = name;
     }
+    
+    public void setFixedissues(final Integer fixedissues) {
+        this.fixedissues = fixedissues;
+    }
+    
+    public void setRemovedissues(final Integer removedissues) {
+        this.removedissues = removedissues;
+    }
+    
+    public Integer getFixedissues() {
+    	return fixedissues;
+    }
+    
+    public Integer getRemovedissues() {
+    	return removedissues;
+    }
 
     public void setDescription(final String description) {
         this.description = description;
@@ -138,6 +156,8 @@ public class Project implements Entity {
     public List<Rule> getMostViolatedRules() {
         return mostViolatedRules;
     }
+    
+    
     
     public List<Qprofile> getQprofile() {
         return qprofile;
