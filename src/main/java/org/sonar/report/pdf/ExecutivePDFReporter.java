@@ -277,6 +277,8 @@ public class ExecutivePDFReporter extends PDFReporter {
          violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_CONFIRMED_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
          violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_FALSE_POSITIVE_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
          violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_WONT_FIX_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
+         violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_FIXED_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
+         violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_REMOVED_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
          violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_BLOCKER_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
          violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_CRITICAL_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
          violationsname.addCell(new Phrase(getTextProperty(PDFResources.GENERAL_MAJOR_VIOLATIONS), Style.DASHBOARD_DATA_FONT_2));
@@ -291,6 +293,8 @@ public class ExecutivePDFReporter extends PDFReporter {
          violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.CONFIRMED_ISSUES).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
          violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.FALSE_POSITIVE_ISSUES).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
          violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.WONT_FIX_ISSUES).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
+         violationsvalue.addCell(new Phrase(project.getFixedissues().toString(), Style.DASHBOARD_DATA_FONT_2));
+         violationsvalue.addCell(new Phrase(project.getRemovedissues().toString(), Style.DASHBOARD_DATA_FONT_2));
          violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.BLOCKER_VIOLATIONS).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
          violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.CRITICAL_VIOLATIONS).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
          violationsvalue.addCell(new Phrase(project.getMeasure(MetricKeys.MAJOR_VIOLATIONS).getFormatValue(), Style.DASHBOARD_DATA_FONT_2));
