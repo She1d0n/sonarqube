@@ -5,7 +5,7 @@ class PdfReportController < ApplicationController
 
   def get
     project = Project.by_key(params[:resource])
-    send_file Rails.root.join('pdf-files', project.key.gsub(':', '-') + '.pdf'), :type => 'application/pdf', :disposition => 'attachment'
+    send_file Rails.root.join('pdf-files', project.key.gsub(':', '-').gsub('/', '-') + '.pdf'), :type => 'application/pdf', :disposition => 'attachment'
   end
 
   def store
