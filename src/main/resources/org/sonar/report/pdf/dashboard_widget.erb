@@ -2,7 +2,7 @@
     <div class="dashbox">
         <h3>PDF Report</h3>
         <%
-          filename = Rails.root.join('pdf-files', @project.key.gsub(':', '-') + '.pdf')
+          filename = Rails.root.join('pdf-files', @project.key.gsub(':', '-').gsub('/', '-') + '.pdf')
           if File.exists?(filename)
         %>
         <h4>Get quality info in a pdf document</h4>

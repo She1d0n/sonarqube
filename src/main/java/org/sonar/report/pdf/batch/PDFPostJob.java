@@ -93,7 +93,7 @@ public class PDFPostJob implements PostJob, CheckProject {
 
         generator.execute();
 
-        String path = fs.workDir().getAbsolutePath() + "/" + project.getEffectiveKey().replace(':', '-') + PDF_EXTENSION;
+        String path = fs.workDir().getAbsolutePath() + "/" + project.getEffectiveKey().replace(':', '-').replace('/', '-') + PDF_EXTENSION;
 
         File pdf = new File(path);
         if (pdf.exists()) {

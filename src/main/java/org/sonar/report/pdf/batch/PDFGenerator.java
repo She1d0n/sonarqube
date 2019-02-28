@@ -99,8 +99,9 @@ public class PDFGenerator {
                     password);
 
             String sonarProjectId = project.getEffectiveKey();
-            String path = fs.workDir().getAbsolutePath() + "/" + sonarProjectId.replace(':', '-') + ".pdf";
 
+            String path = fs.workDir().getAbsolutePath() + "/" + sonarProjectId.replace(':', '-').replace('/', '-') + ".pdf";
+            
             PDFReporter reporter = null;
             if (reportType != null && (PDFResources.EXECUTIVE_REPORT_TYPE).equals(reportType)) {
                 LOG.info("Executive report type selected");
@@ -116,8 +117,8 @@ public class PDFGenerator {
             baos.writeTo(fos);
             fos.flush();
             fos.close();
-            String e = sonarProjectId.replace(':', '-');
-            LOG.info("PDF report generated (see {} .pdf on build output directory)",e);
+            String e = sonarProjectId.replace(':', '-').replace('/', '-');
+            LOG.info("PDF report generated (see {}.pdf on build output directory)",e);
         } catch (ReportException | IOException e) {
             LOG.error("Problem generating PDF file.", e);
         }
