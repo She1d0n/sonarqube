@@ -79,13 +79,18 @@ public class FileInfoBuilder extends AbstractBuilder {
     public static void initFromNode(final FileInfo fileInfo, final MeasuresComponent fileNode, final FileInfoTypes type) {
         fileInfo.setKey(fileNode.getKey());
         fileInfo.setName(fileNode.getName());
-
-        if (type == FileInfoTypes.VIOLATIONS_CONTENT) {
-            fileInfo.setViolations(fileNode.getMeasures().get(0).getMetricValue());
-        } else if (type == FileInfoTypes.CCN_CONTENT) {
-            fileInfo.setComplexity(fileNode.getMeasures().get(0).getMetricValue());
-        } else if (type == FileInfoTypes.DUPLICATIONS_CONTENT) {
-            fileInfo.setDuplicatedLines(fileNode.getMeasures().get(0).getMetricValue());
+        if (fileNode.getMeasures().size()>0){
+        	if (type == FileInfoTypes.VIOLATIONS_CONTENT) {
+        		fileInfo.setViolations(fileNode.getMeasures().get(0).getMetricValue());
+        	} else if (type == FileInfoTypes.CCN_CONTENT) {
+        		fileInfo.setComplexity(fileNode.getMeasures().get(0).getMetricValue());
+        	} else if (type == FileInfoTypes.DUPLICATIONS_CONTENT) {
+        		fileInfo.setDuplicatedLines(fileNode.getMeasures().get(0).getMetricValue());
+        	}
+        }else {
+        	 fileInfo.setViolations("N/A");
+        	 fileInfo.setComplexity("N/A");
+        	 fileInfo.setDuplicatedLines("N/A");
         }
     }
 
