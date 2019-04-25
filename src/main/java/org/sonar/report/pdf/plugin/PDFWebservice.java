@@ -93,7 +93,7 @@ public class PDFWebservice implements WebService {
             	 .endObject()
             	 .close();
              }else {
-            	 response.setHeader("Content-Disposition", "attachment;filename="+filename);
+            	 response.setHeader("Content-Disposition", "attachment;filename="+filename+PDF_EXTENSION);
             	 response.stream().setMediaType("application/pdf");
 				try (
 				   BufferedInputStream is = new BufferedInputStream(new FileInputStream(downloadFile));
