@@ -221,8 +221,7 @@ public class ProjectBuilder extends AbstractBuilder {
 		query.resolved(true);
 		query.resolutions(resolutions);
 		Issues result = sonar.find(query);
-		int total=result.getPaging().total();
-		return total;
+		return result.getPaging().total();
 	}
 
     private void initMostViolatedRules(final Project project) throws ReportException {
@@ -233,19 +232,39 @@ public class ProjectBuilder extends AbstractBuilder {
         ValueComparator bvc = new ValueComparator(issues);
         TreeMap<String, IssueBean> sortedMap = new TreeMap<>(bvc);
         // Reverse iteration to get violations with upper level first
+        int componentsize = 1;
+        List<MeasuresComponent> filecomponents = new ArrayList<>();
+        for (int i = 1;i<=componentsize; i++) {
+        	MeasuresComponentTreeQuery resourceQuery = MeasuresComponentTreeQuery.createForMetrics(project.getKey(), MetricKeys.VIOLATIONS);
+        	resourceQuery.setQualifiers("FIL");
+        	resourceQuery.setMetricSort(MetricKeys.VIOLATIONS);
+        	resourceQuery.setS(S);        
+        	resourceQuery.setAsc(false);
+        	resourceQuery.setPs(100);
+        	resourceQuery.setP(i);
+        	MeasuresComponentsTree resources = sonar.find(resourceQuery);
+			int componenttotal=resources.getPaging().total();
+			componentsize=(int)Math.ceil((double)componenttotal/100);
+        	List<MeasuresComponent> tempfilecomponent =resources.getComponents();
+        	if (!tempfilecomponent.isEmpty() && Integer.parseInt(tempfilecomponent.get(0).getMeasures().get(0).getMetricValue()) > 0) 
+        		filecomponents.addAll(tempfilecomponent);
+        	}
+        
 		int size = 1;
 		List<Issue> issuesByLevel = new ArrayList<>();
-        for (int i = 1;i<=size; i++) {
-            IssueQuery query = IssueQuery.create();
-            query.componentKeys(project.getKey());
-			query.resolved(false);
-			query.pageSize(500);
-			query.pageIndex(i);
-            Issues result = sonar.find(query);
-			int total=result.getPaging().total();
-			size=(int)Math.ceil((double)total/500);
-			List<Issue>  tempissuesByLevel = result.getIssues();
-			issuesByLevel.addAll(tempissuesByLevel);
+		for (int j = 0;j<filecomponents.size(); j++) {
+			for (int i = 1;i<=size; i++) {
+				IssueQuery query = IssueQuery.create();
+				query.componentKeys(filecomponents.get(j).getKey());
+				query.resolved(false);
+				query.pageSize(500);
+				query.pageIndex(i);
+				Issues result = sonar.find(query);
+				int total=result.getPaging().total();
+				size=(int)Math.ceil((double)total/500);
+				List<Issue>  tempissuesByLevel = result.getIssues();
+				issuesByLevel.addAll(tempissuesByLevel);
+			}
 		}
          if (!issuesByLevel.isEmpty()) {
             initMostViolatedRulesFromNode(issuesByLevel, issues);

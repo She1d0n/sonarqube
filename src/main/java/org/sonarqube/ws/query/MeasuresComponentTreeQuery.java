@@ -73,6 +73,10 @@ public class MeasuresComponentTreeQuery extends Query<MeasuresComponentsTree>  {
 		 return (MeasuresComponentTreeQuery) addParam("s", s);
 	}
 	
+	public MeasuresComponentTreeQuery setP(int p) {
+		 return (MeasuresComponentTreeQuery) addParam("p", p);
+	}
+	
 	public MeasuresComponentTreeQuery setStrategy(String strategy) {
 		 return (MeasuresComponentTreeQuery) addParam("strategy", strategy);
 	}
