@@ -97,13 +97,16 @@ public class PDFPostJob implements PostJob {
 	      String password = settings.hasKey(SONAR_P_KEY) ? settings.getString(SONAR_P_KEY) : SONAR_P_DEFAULT_VALUE;
 	      String reportType = settings.hasKey(REPORT_TYPE) ? settings.getString(REPORT_TYPE) : REPORT_TYPE_DEFAULT_VALUE;
 	      String projectkey = context.settings().getString(PROJECT_KEY);
+	      if (context.settings().getProperties().containsKey("sonar.branch")) {
+	    	  projectkey=projectkey+":"+context.settings().getProperties().get("sonar.branch");
+	      }
 	      try {
 	    	  	PDFGenerator generator = new PDFGenerator(projectkey, fs, sonarHostUrl, username, password, reportType);
 	        	generator.execute();
 	        	}catch(Exception e) {
 	                LOG.error("Problem generating PDF file.", e);
 	       }	
-	      	String path = fs.workDir().getAbsolutePath() + "/" + projectkey.replace(':', '-') + PDF_EXTENSION;
+	      	String path = fs.workDir().getAbsolutePath() + "/" + projectkey.replace(':', '-').replace('/', '-') + PDF_EXTENSION;
 	        File pdf = new File(path);
 	        if (pdf.exists()) {
 	            FileUploader.upload(pdf, sonarHostUrl + PDFResources.PDF_REPORT_STORE_PATH, username, password);

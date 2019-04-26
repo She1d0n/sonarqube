@@ -83,7 +83,7 @@ public class PDFWebservice implements WebService {
 	private final class HandleGet implements RequestHandler {
 		@Override
          public void handle(Request request, Response response)   {
-			 String filename = request.mandatoryParam("componentKey").replace(':', '-');
+			 String filename = request.mandatoryParam("componentKey").replace(':', '-').replace('/', '-');
 			 String path = PDFPATH + "/" + filename + PDF_EXTENSION;
         	 File downloadFile = new File(path);
              if (!downloadFile.exists()) {

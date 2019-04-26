@@ -99,7 +99,7 @@ public class PDFGenerator {
                     password);
 
             String sonarProjectId = project;
-            String path = fs.workDir().getAbsolutePath() + "/" + sonarProjectId.replace(':', '-') + ".pdf";
+            String path = fs.workDir().getAbsolutePath() + "/" + sonarProjectId.replace(':', '-').replace('/', '-') + ".pdf";
 
             PDFReporter reporter = null;
             if (reportType != null && (PDFResources.EXECUTIVE_REPORT_TYPE).equals(reportType)) {

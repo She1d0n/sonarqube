@@ -176,7 +176,7 @@ public abstract class PDFReporter implements Serializable {
         if (project == null) {
             WSClient sonar = WSClient.create(credentials.getUrl(), credentials.getUsername(),
                     credentials.getPassword()); 
-            LOG.info("waiting for Compute Engine task.........");
+            LOG.info("waiting for Compute Engine task for {}.........",getProjectKey());
             while (true) { 
             	try {
 					Thread.sleep(5000);
