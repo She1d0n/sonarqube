@@ -240,11 +240,11 @@ public class ProjectBuilder extends AbstractBuilder {
         	resourceQuery.setMetricSort(MetricKeys.VIOLATIONS);
         	resourceQuery.setS(S);        
         	resourceQuery.setAsc(false);
-        	resourceQuery.setPs(100);
+        	resourceQuery.setPs(500);
         	resourceQuery.setP(i);
         	MeasuresComponentsTree resources = sonar.find(resourceQuery);
 			int componenttotal=resources.getPaging().total();
-			componentsize=(int)Math.ceil((double)componenttotal/100);
+			componentsize=(int)Math.ceil((double)componenttotal/500);
         	List<MeasuresComponent> tempfilecomponent =resources.getComponents();
         	if (!tempfilecomponent.isEmpty() && Integer.parseInt(tempfilecomponent.get(0).getMeasures().get(0).getMetricValue()) > 0) 
         		filecomponents.addAll(tempfilecomponent);
